@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataAccess", "Data\DataAcce
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SchoolMedicalManagement", "SchoolMedicalManagement\SchoolMedicalManagement.csproj", "{0A050574-47F2-4273-B568-11E792602A6E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BusinessObject", "BusinessObject\BusinessObject.csproj", "{2B708D11-82AB-42D1-AD32-A84753E9A89E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{0A050574-47F2-4273-B568-11E792602A6E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0A050574-47F2-4273-B568-11E792602A6E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0A050574-47F2-4273-B568-11E792602A6E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2B708D11-82AB-42D1-AD32-A84753E9A89E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2B708D11-82AB-42D1-AD32-A84753E9A89E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2B708D11-82AB-42D1-AD32-A84753E9A89E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2B708D11-82AB-42D1-AD32-A84753E9A89E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

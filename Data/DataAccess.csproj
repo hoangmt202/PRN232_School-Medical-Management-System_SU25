@@ -20,4 +20,8 @@
     <Folder Include="UnitOfWork\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\BusinessObject\BusinessObject.csproj" />
+  </ItemGroup>
+
 </Project>

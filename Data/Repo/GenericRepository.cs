@@ -1,18 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DataAccess.Repo
 {
     public class GenericRepository<T> : IGenericRepository<T> where T : class
     {
-        protected readonly HealthChildTrackerContext _context;
+        protected readonly SchoolMedicalDbContext _context;
         protected readonly DbSet<T> _dbSet;
 
-        public GenericRepository(HealthChildTrackerContext context)
+        public GenericRepository(SchoolMedicalDbContext context)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
             _dbSet = context.Set<T>();
