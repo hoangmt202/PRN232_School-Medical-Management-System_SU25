@@ -1,5 +1,6 @@
 ﻿using BusinessObject.Entity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 
 public class SchoolMedicalDbContext : DbContext
 {
@@ -20,7 +21,18 @@ public class SchoolMedicalDbContext : DbContext
     public DbSet<IncidentReport> IncidentReports => Set<IncidentReport>();
     public DbSet<HealthCheck> HealthChecks => Set<HealthCheck>();
     public DbSet<DrugStorage> DrugStorages => Set<DrugStorage>();
-
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        optionsBuilder.UseSqlServer(GetConnectionString());
+        optionsBuilder.EnableSensitiveDataLogging();
+    }
+    private string GetConnectionString()
+    {
+        IConfiguration configuration = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json", true, true).Build();
+        return configuration["ConnectionStrings:DefaultConnection"];
+    }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
