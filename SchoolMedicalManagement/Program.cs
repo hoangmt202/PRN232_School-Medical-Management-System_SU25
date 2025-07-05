@@ -1,8 +1,25 @@
+using BusinessLogic.Services;
+using DataAccess;
+using DataAccess.Repo;
+using DataAccess.UnitOfWorks;
+using Microsoft.EntityFrameworkCore;
+using System;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
-
+builder.Services.AddDbContext<SchoolMedicalDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.AddAutoMapper(typeof(MappingConfig));
+builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+builder.Services.AddScoped<IUnitOfWorks, UnitOfWork>();
+builder.Services.AddScoped<IStudentService, StudentService>();
+builder.Services.AddScoped<IStudentService, StudentService>();
+builder.Services.AddScoped<IMedicalRecordService, MedicalRecordService>();
+builder.Services.AddScoped<IMedicationService, MedicationService>();
+builder.Services.AddScoped<IInventoryService, InventoryService>();
+builder.Services.AddScoped<ISchoolNurseService, SchoolNurseService>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -21,5 +38,9 @@ app.UseRouting();
 app.UseAuthorization();
 
 app.MapRazorPages();
-
+app.MapGet("/", context =>
+{
+    context.Response.Redirect("/admin/Inventory");
+    return Task.CompletedTask;
+});
 app.Run();

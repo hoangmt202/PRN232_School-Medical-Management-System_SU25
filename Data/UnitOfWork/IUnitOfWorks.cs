@@ -16,10 +16,11 @@ namespace DataAccess
         IGenericRepository<HealthCheck> HealthCheckRepository { get; }
         IGenericRepository<IncidentReport> IncidentReportRepository { get; }
         IGenericRepository<Manager> ManagerRepository { get; }
-        IGenericRepository<MedicalRecord> MedicalRecordRepository { get; }
+        IMedicalRecordRepository MedicalRecordRepository { get; }
         IGenericRepository<Medication> MedicationRepository { get; }
         IGenericRepository<Parent> ParentRepository { get; }
-        IGenericRepository<SchoolNurse> SchoolNurseRepository { get; }
+        ISchoolNurseRepository SchoolNurseRepository { get; }
+        IInventoryRepository InventoryRepository { get; }
         IGenericRepository<Student> StudentRepository { get; }
         IGenericRepository<User> UserRepository { get; }
         IGenericRepository<Vaccination> VaccinationRepository { get; }

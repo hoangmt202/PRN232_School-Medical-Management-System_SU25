@@ -84,6 +84,7 @@ public class SchoolMedicalDbContext : DbContext
             .OnDelete(DeleteBehavior.Restrict);
 
         modelBuilder.Entity<MedicalRecord>()
+            .ToTable("medical_records")
             .HasOne(m => m.Student)
             .WithOne(s => s.MedicalRecord)
             .HasForeignKey<MedicalRecord>(m => m.StudentId)

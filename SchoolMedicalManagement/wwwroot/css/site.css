@@ -20,3 +20,6 @@ html {
 body {
   margin-bottom: 60px;
 }
+.bg-light-subtle {
+    background-color: #f9fafc;
+}

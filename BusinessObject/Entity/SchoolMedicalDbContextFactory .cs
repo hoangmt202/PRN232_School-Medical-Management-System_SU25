@@ -9,7 +9,7 @@ namespace BusinessObject.Entity
         {
             var optionsBuilder = new DbContextOptionsBuilder<SchoolMedicalDbContext>();
 
-            optionsBuilder.UseSqlServer("Server=localhost;Database=SchoolMedicalDb;User Id=sa;Password=123456;TrustServerCertificate=True");
+            optionsBuilder.UseSqlServer("Server=LAPTOP-4EB8UC8S\\SQLEXPRESS;Database=SchoolMedicalDb;User Id=sa;Password=12345;TrustServerCertificate=True");
 
             return new SchoolMedicalDbContext(optionsBuilder.Options);
         }
