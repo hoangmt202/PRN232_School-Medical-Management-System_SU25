@@ -16,6 +16,6 @@ namespace BusinessLogic.DTOs
         public User User { get; set; } = null!;
         public ICollection<Medication> GivenMedications { get; set; } = new List<Medication>();
         public ICollection<IncidentReport> IncidentReports { get; set; } = new List<IncidentReport>();
-        public ICollection<DrugStorage> ManagedDrugs { get; set; } = new List<DrugStorage>();
+        public ICollection<BusinessObject.Entity.DrugStorage> ManagedDrugs { get; set; } = new List<BusinessObject.Entity.DrugStorage>();
     }
 } 

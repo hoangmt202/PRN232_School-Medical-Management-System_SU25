@@ -16,6 +16,6 @@ namespace BusinessLogic.DTOs
         public int UserId { get; set; }
 
         public User User { get; set; } = null!;
-        public ICollection<Student> Students { get; set; } = new List<Student>();
+        public ICollection<BusinessObject.Entity.Student> Students { get; set; } = new List<BusinessObject.Entity.Student>();
     }
 }

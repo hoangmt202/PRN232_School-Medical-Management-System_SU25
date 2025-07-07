@@ -98,7 +98,26 @@ public class SchoolMedicalDbContext : DbContext
             .HasOne(vn => vn.Student)
             .WithMany(s => s.VaccinationNotices)
             .HasForeignKey(vn => vn.StudentId);
+        modelBuilder.Entity<VaccinationPlan>(entity =>
+        {
+            entity.ToTable("VaccinationPlan");
 
+            entity.HasKey(e => e.Id);
+
+            entity.Property(e => e.VaccineName)
+                  .IsRequired()
+                  .HasMaxLength(255);
+
+            entity.Property(e => e.ScheduledDate)
+                  .IsRequired();
+
+            entity.Property(e => e.TargetGroup)
+                  .IsRequired()
+                  .HasMaxLength(255);
+
+            entity.Property(e => e.Notes)
+                  .HasMaxLength(2000);
+        });
         modelBuilder.Entity<Medication>()
             .HasOne(m => m.Student)
             .WithMany(s => s.Medications)
