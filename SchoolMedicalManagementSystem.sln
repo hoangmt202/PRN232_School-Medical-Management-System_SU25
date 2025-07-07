@@ -3,13 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.9.34728.123
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BusinessLogic", "Business\BusinessLogic.csproj", "{3D91645F-2A73-473F-8FED-77B09FCEE3AF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BusinessLogic", "Business\BusinessLogic.csproj", "{3D91645F-2A73-473F-8FED-77B09FCEE3AF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataAccess", "Data\DataAccess.csproj", "{22C864D0-6D56-4450-B941-20DBC7A89FCC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataAccess", "Data\DataAccess.csproj", "{22C864D0-6D56-4450-B941-20DBC7A89FCC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SchoolMedicalManagement", "SchoolMedicalManagement\SchoolMedicalManagement.csproj", "{0A050574-47F2-4273-B568-11E792602A6E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SchoolMedicalManagement", "SchoolMedicalManagement\SchoolMedicalManagement.csproj", "{0A050574-47F2-4273-B568-11E792602A6E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BusinessObject", "BusinessObject\BusinessObject.csproj", "{2B708D11-82AB-42D1-AD32-A84753E9A89E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BusinessObject", "BusinessObject\BusinessObject.csproj", "{2B708D11-82AB-42D1-AD32-A84753E9A89E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "API", "API\API.csproj", "{E1673BAD-0251-403C-9947-8B5A7AE51A48}"
 EndProject

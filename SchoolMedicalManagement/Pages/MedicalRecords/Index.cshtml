@@ -1,0 +1,90 @@
+﻿@page "/parent/medical-record"
+@model SchoolMedicalManagement.Pages.MedicalRecords.IndexModel
+@{
+    ViewData["Title"] = "My Children's Medical Records";
+}
+
+<div class="container-fluid py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-10 col-md-12">
+            <div class="card shadow-sm">
+                <div class="card-header bg-white border-bottom d-flex justify-content-between align-items-center">
+                    <div>
+                        <h4 class="mb-0">@ViewData["Title"]</h4>
+                        <small class="text-muted">View and manage your children's medical information</small>
+                    </div>
+                    <a href="/parent/medication-submission" class="btn btn-sm btn-outline-primary">
+                        <i class="fas fa-plus me-1"></i> Submit Medication
+                    </a>
+                </div>
+
+                <div class="card-body bg-light-subtle">
+                    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+                    {
+                        <div class="alert alert-warning" role="alert">
+                            <strong>Notice:</strong> @Model.ErrorMessage
+                        </div>
+                    }
+
+                    @if (Model.MedicalRecords.Any())
+                    {
+                        @foreach (var record in Model.MedicalRecords)
+                        {
+                            <div class="card mb-4 border-0 shadow-sm">
+                                <div class="card-header bg-gradient-light d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h5 class="mb-0">@record.StudentName</h5>
+                                        <small class="text-muted">
+                                            <span class="badge bg-primary me-2">@record.StudentClass</span>
+                                            <i class="far fa-calendar-alt me-1"></i>
+                                            @record.StudentDateOfBirth.ToString("MMM dd, yyyy")
+                                        </small>
+                                    </div>
+                                    <a href="/parent/edit-medical-record/@record.Id" class="btn btn-outline-secondary btn-sm">
+                                        <i class="fas fa-edit me-1"></i> Edit
+                                    </a>
+                                </div>
+                                <div class="card-body bg-white">
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <h6 class="text-dark">Allergies</h6>
+                                            <p class="text-muted mb-0">
+                                                @(string.IsNullOrWhiteSpace(record.Allergies) ? "None recorded" : record.Allergies)
+                                            </p>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <h6 class="text-dark">Chronic Diseases</h6>
+                                            <p class="text-muted mb-0">
+                                                @(string.IsNullOrWhiteSpace(record.ChronicDiseases) ? "None recorded" : record.ChronicDiseases)
+                                            </p>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <h6 class="text-dark">Treatment History</h6>
+                                            <p class="text-muted mb-0">
+                                                @(string.IsNullOrWhiteSpace(record.TreatmentHistory) ? "None recorded" : record.TreatmentHistory)
+                                            </p>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <h6 class="text-dark">Physical Condition</h6>
+                                            <p class="text-muted mb-0">
+                                                @(string.IsNullOrWhiteSpace(record.PhysicalCondition) ? "None recorded" : record.PhysicalCondition)
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <div class="text-center py-5">
+                            <i class="fas fa-notes-medical fa-3x text-secondary mb-3"></i>
+                            <h5 class="text-secondary">No Medical Records Found</h5>
+                            <p class="text-sm text-secondary">Medical records for your children will appear here once created by the school nurse.</p>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
