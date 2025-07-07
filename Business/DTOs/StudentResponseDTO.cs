@@ -16,10 +16,10 @@ namespace BusinessLogic.DTOs
         public string Class { get; set; } = null!;
         public int ParentId { get; set; }
         public Parent Parent { get; set; } = null!;
-        public MedicalRecord? MedicalRecord { get; set; }
-        public ICollection<Vaccination> Vaccinations { get; set; } = new List<Vaccination>();
+        public BusinessObject.Entity.MedicalRecord? MedicalRecord { get; set; }
+        public ICollection<BusinessObject.Entity.Vaccination> Vaccinations { get; set; } = new List<BusinessObject.Entity.Vaccination>();
         public ICollection<VaccinationNotice> VaccinationNotices { get; set; } = new List<VaccinationNotice>();
-        public ICollection<Medication> Medications { get; set; } = new List<Medication>();
+        public ICollection<BusinessObject.Entity.Medication> Medications { get; set; } = new List<BusinessObject.Entity.Medication>();
         public ICollection<IncidentReport> IncidentReports { get; set; } = new List<IncidentReport>();
         public ICollection<HealthCheck> HealthChecks { get; set; } = new List<HealthCheck>();
     }

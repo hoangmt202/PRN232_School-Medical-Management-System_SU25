@@ -30,7 +30,7 @@ namespace SchoolMedicalManagement.Pages.Admin.Inventory
             {
                 Drugs = (await _drugStorageService.GetAllDrugsAsync()).ToList();
                 Alerts = await _drugStorageService.GetInventoryAlertsAsync();
-                Nurses = (await _schoolNurseService.GetAllSchoolNursesAsync()).ToList();
+                Nurses = (await _schoolNurseService.GetAll();
             }
             catch (Exception ex)
             {
