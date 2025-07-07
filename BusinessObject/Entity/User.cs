@@ -18,7 +18,7 @@ namespace BusinessObject.Entity
         public string Role { get; set; } = null!;
         [Timestamp]
         [Column("created_at")]
-        public byte[] CreatedAt { get; set; }
+        public DateTime CreatedAt { get; set; }
 
         public Parent? Parent { get; set; }
         public SchoolNurse? SchoolNurse { get; set; }
