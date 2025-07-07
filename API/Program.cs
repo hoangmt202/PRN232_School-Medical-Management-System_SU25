@@ -1,7 +1,5 @@
 using BusinessLogic.Services;
-using BusinessLogic.Services.Interface;
 using DataAccess;
-using DataAccess.Repo;
 using DataAccess.UnitOfWorks;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.OData;
@@ -38,15 +36,6 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IUnitOfWorks, UnitOfWork>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IParentService, ParentService>();
-builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
-builder.Services.AddScoped<IUnitOfWorks, UnitOfWork>();
-builder.Services.AddScoped<IStudentService, StudentService>();
-builder.Services.AddScoped<IStudentService, StudentService>();
-builder.Services.AddScoped<IMedicalRecordService, MedicalRecordService>();
-builder.Services.AddScoped<IMedicationService, MedicationService>();
-builder.Services.AddScoped<IInventoryService, InventoryService>();
-builder.Services.AddScoped<ISchoolNurseService, SchoolNurseService>();
-builder.Services.AddScoped<IVaccinationParentService, VaccinationParentService>();
 builder.Services.AddDbContext<SchoolMedicalDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
 );

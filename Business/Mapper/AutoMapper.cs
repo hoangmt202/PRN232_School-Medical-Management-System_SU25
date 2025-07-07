@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using BusinessLogic.DTOs;
-using BusinessLogic.DTOs.DrugStorage;
 using BusinessObject.Entity;
 using System;
 using System.Collections.Generic;
@@ -17,10 +16,6 @@ namespace BusinessLogic.Mapper
             CreateMap<Parent, ParentResponseDTO>();
             CreateMap<ParentRequestDTO, Parent>()
                 .ForMember(dest => dest.Id, opt => opt.Ignore());
-            CreateMap<DrugStorage, DrugStorageDto>().ReverseMap();
-            CreateMap<DrugStorage, CreateDrugStorageDto>().ReverseMap();
-            CreateMap<DrugStorage, UpdateDrugStorageDto>().ReverseMap();
-            CreateMap<InventoryAlert, InventoryAlertDto>().ReverseMap();
         }
     }
 }

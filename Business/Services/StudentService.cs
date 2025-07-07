@@ -107,11 +107,6 @@ namespace BusinessLogic.Services
             };
         }
 
-        public Task<IEnumerable<Student>> GetStudentsByParentUserIdAsync(int parentUserId)
-        {
-            return _unitOfWork.StudentRepository.GetByParentIdAsync(parentUserId);
-        }
-
         public async Task<StudentResponseDTO> Update(int id, StudentRequestDTO studentDTO)
         {
             var student = await _unitOfWork.StudentRepository.GetAsync(
