@@ -11,36 +11,138 @@ namespace BusinessLogic.Services
 {
     public class ParentService : IParentService
     {
-        private readonly SchoolMedicalDbContext _context;
+        private readonly DataAccess.IUnitOfWorks _unitOfWork;
 
-        public ParentService(SchoolMedicalDbContext context)
+        public ParentService(DataAccess.IUnitOfWorks unitOfWork)
         {
-            _context = context;
+            _unitOfWork = unitOfWork;
         }
 
-        public Task<Parent> CreateParentWithUser(AddParentDTO parentDTO)
+        public async Task<ParentResponseDTO> CreateParentWithUser(ParentRequestDTO parentDTO)
         {
-            throw new NotImplementedException();
+            var parent = new Parent
+            {
+                FullName = parentDTO.FullName,
+                PhoneNumber = parentDTO.PhoneNumber,
+                Address = parentDTO.Address,
+                UserId = parentDTO.UserId
+            };
+
+            await _unitOfWork.ParentRepository.AddAsync(parent);
+            await _unitOfWork.SaveChangesAsync();
+
+            return await GetParentById(parent.Id);
         }
 
-        public Task<Parent> Delete(int id)
+        public async Task<ParentResponseDTO> Delete(int id)
         {
-            throw new NotImplementedException();
+            var parent = await _unitOfWork.ParentRepository.GetAsync(
+                p => p.Id == id,
+                "User,Students");
+
+            if (parent == null)
+                throw new ArgumentException("Parent not found");
+
+            _unitOfWork.ParentRepository.Delete(parent);
+            await _unitOfWork.SaveChangesAsync();
+
+            return new ParentResponseDTO
+            {
+                Id = parent.Id,
+                FullName = parent.FullName,
+                PhoneNumber = parent.PhoneNumber,
+                Address = parent.Address,
+                UserId = parent.UserId,
+                User = parent.User,
+                Students = parent.Students
+            };
         }
 
-        public async Task<List<Parent>> GetAll()
+        public async Task<List<ParentResponseDTO>> GetAll()
         {
-            throw new NotImplementedException();
+            var parents = await _unitOfWork.ParentRepository.GetAllAsync("User,Students");
+
+            return parents.Select(p => new ParentResponseDTO
+            {
+                Id = p.Id,
+                FullName = p.FullName,
+                PhoneNumber = p.PhoneNumber,
+                Address = p.Address,
+                UserId = p.UserId,
+                User = p.User,
+                Students = p.Students
+            }).ToList();
         }
 
-        public Task<Parent> GetParentByUserId(int UserId)
+        public async Task<ParentResponseDTO> GetParentByUserId(int UserId)
         {
-            throw new NotImplementedException();
+            var parent = await _unitOfWork.ParentRepository.GetAsync(
+                p => p.UserId == UserId,
+                "User,Students");
+
+            if (parent == null)
+                return null;
+
+            return new ParentResponseDTO
+            {
+                Id = parent.Id,
+                FullName = parent.FullName,
+                PhoneNumber = parent.PhoneNumber,
+                Address = parent.Address,
+                UserId = parent.UserId,
+                User = parent.User,
+                Students = parent.Students
+            };
         }
 
-        public Task<Parent> Update(ParentDTO parentDTO)
+        public async Task<ParentResponseDTO> Update(int id, ParentRequestDTO parentDTO)
         {
-            throw new NotImplementedException();
+            var parent = await _unitOfWork.ParentRepository.GetAsync(
+                p => p.Id == id,
+                "User,Students");
+
+            if (parent == null)
+                throw new ArgumentException("Parent not found");
+
+            parent.FullName = parentDTO.FullName;
+            parent.PhoneNumber = parentDTO.PhoneNumber;
+            parent.Address = parentDTO.Address;
+            parent.UserId = parentDTO.UserId;
+
+            _unitOfWork.ParentRepository.Update(parent);
+            await _unitOfWork.SaveChangesAsync();
+
+            return new ParentResponseDTO
+            {
+                Id = parent.Id,
+                FullName = parent.FullName,
+                PhoneNumber = parent.PhoneNumber,
+                Address = parent.Address,
+                UserId = parent.UserId,
+                User = parent.User,
+                Students = parent.Students
+            };
+        }
+
+        public async Task<ParentResponseDTO> GetParentById(int id)
+        {
+            var parent = await _unitOfWork.ParentRepository.GetAsync(
+                p => p.Id == id,
+                "User,Students");
+
+            if (parent == null)
+                return null;
+
+            return new ParentResponseDTO
+            {
+                Id = parent.Id,
+                FullName = parent.FullName,
+                PhoneNumber = parent.PhoneNumber,
+                Address = parent.Address,
+                UserId = parent.UserId,
+                User = parent.User,
+                Students = parent.Students
+            };
         }
     }
 }

@@ -22,21 +22,21 @@ namespace SchoolMedicalManagement.Pages.Auth
         }
 
         [BindProperty]
-        public InputModel Input { get; set; }
-        public string ReturnUrl { get; set; }
+        public InputModel Input { get; set; } = new InputModel();
+        public string? ReturnUrl { get; set; }
 
         [TempData]
-        public string ErrorMessage { get; set; }
+        public string? ErrorMessage { get; set; }
 
         public class InputModel
         {
             [Required(ErrorMessage = "Username or Email is required")]
             [Display(Name = "Username or Email")]
-            public string UsernameOrEmail { get; set; }
+            public string UsernameOrEmail { get; set; } = string.Empty;
 
             [Required(ErrorMessage = "Password is required")]
             [DataType(DataType.Password)]
-            public string Password { get; set; }
+            public string Password { get; set; } = string.Empty;
 
             [Display(Name = "Remember me?")]
             public bool RememberMe { get; set; }
@@ -49,15 +49,11 @@ namespace SchoolMedicalManagement.Pages.Auth
             }
 
             ReturnUrl = returnUrl ?? Url.Content("~/");
-            Input = new InputModel();
             return Page();
         }
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
-            if (Input == null)
-            {
-                Input = new InputModel();
-            }
+
 
             if (!ModelState.IsValid)
             {
@@ -89,7 +85,7 @@ namespace SchoolMedicalManagement.Pages.Auth
                     if (loginResponse != null && !string.IsNullOrEmpty(loginResponse.Token))
                     {
                         // Giải mã token để lấy UserId
-                        string userId = null;
+                        string? userId = null;
                         try
                         {
                             var secret = _configuration["JWT:SecretKey"];
@@ -214,15 +210,15 @@ namespace SchoolMedicalManagement.Pages.Auth
         }
         public class LoginResponse
         {
-            public string Token { get; set; }
-            public string Role { get; set; }
-            public string UserName { get; set; }
+            public string Token { get; set; } = string.Empty;
+            public string Role { get; set; } = string.Empty;
+            public string UserName { get; set; } = string.Empty;
         }
 
         // Class to deserialize API error responses
         public class ErrorResponse
         {
-            public string Message { get; set; }
+            public string Message { get; set; } = string.Empty;
         }
     }
 }

@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using BusinessLogic.DTOs;
+using BusinessObject.Entity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,11 +9,13 @@ using System.Threading.Tasks;
 
 namespace BusinessLogic.Mapper
 {
-    public class AutoMapper : Profile
+    public class AutoMapperProfile : Profile
     {
-        /*public AutoMapperProfile() 
+        public AutoMapperProfile()
         {
-            CreateMap<>
-        }*/
+            CreateMap<Parent, ParentResponseDTO>();
+            CreateMap<ParentRequestDTO, Parent>()
+                .ForMember(dest => dest.Id, opt => opt.Ignore());
+        }
     }
 }

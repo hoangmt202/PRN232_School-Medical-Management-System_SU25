@@ -35,6 +35,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IUnitOfWorks, UnitOfWork>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IParentService, ParentService>();
 builder.Services.AddDbContext<SchoolMedicalDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
 );
@@ -56,6 +57,14 @@ builder.Services
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JWT:SecretKey"]))
         };
     });
+
+// Add Authorization Policies
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("AdminOnly", policy => policy.RequireRole("Admin"));
+    options.AddPolicy("MedicalStaff", policy => policy.RequireRole("Admin", "SchoolNurse", "Manager"));
+    options.AddPolicy("ParentAccess", policy => policy.RequireRole("Admin", "Parent"));
+});
 
 // Add SWAGGER JWT
 builder.Services.AddSwaggerGen(c =>
@@ -100,6 +109,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

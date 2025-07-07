@@ -10,16 +10,17 @@ namespace BusinessLogic.Services
 {
     public class UserService : IUserService
     {
-        private readonly SchoolMedicalDbContext _context;
+        private readonly DataAccess.IUnitOfWorks _unitOfWork;
 
-        public UserService(SchoolMedicalDbContext context)
+        public UserService(DataAccess.IUnitOfWorks unitOfWork)
         {
-            _context = context;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task<User> Login(string Email, string password)
         {
-            var account = await _context.Users.FirstOrDefaultAsync(account => account.Email == Email && account.PasswordHash == password);
+            var account = await _unitOfWork.UserRepository.GetAsync(
+                account => account.Email == Email && account.PasswordHash == password);
             return account;
         }
     }

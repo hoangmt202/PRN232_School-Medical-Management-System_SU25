@@ -10,11 +10,12 @@ namespace BusinessLogic.Services
 {
     public interface IParentService
     {
-        Task<Parent> GetParentByUserId(int UserId);
-        Task<List<Parent>> GetAll();
-        Task<Parent> CreateParentWithUser(AddParentDTO parentDTO);
-        Task<Parent> Update(ParentDTO parentDTO);
-        Task<Parent> Delete(int id);
+        Task<ParentResponseDTO> GetParentById(int id);
+        Task<ParentResponseDTO> GetParentByUserId(int UserId);
+        Task<List<ParentResponseDTO>> GetAll();
+        Task<ParentResponseDTO> CreateParentWithUser(ParentRequestDTO parentDTO);
+        Task<ParentResponseDTO> Update(int id, ParentRequestDTO parentDTO);
+        Task<ParentResponseDTO> Delete(int id);
         
     }
 }

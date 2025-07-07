@@ -1,11 +1,32 @@
+using BusinessLogic.Services;
+using BusinessObject.Entity;
+
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddHttpContextAccessor();
+
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddHttpClient();
 builder.Services.AddSession();
 builder.Services.AddSignalR();
-builder.Services.AddHttpClient();
+
+// Add Authentication
+builder.Services.AddAuthentication("Cookies")
+    .AddCookie(options =>
+    {
+        options.LoginPath = "/Auth/Login";
+        options.LogoutPath = "/Auth/Logout";
+        options.AccessDeniedPath = "/Auth/AccessDenied";
+        options.ExpireTimeSpan = TimeSpan.FromHours(8);
+    });
+
+// Add Authorization
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("AdminOnly", policy => policy.RequireRole("Admin"));
+    options.AddPolicy("MedicalStaff", policy => policy.RequireRole("Admin", "SchoolNurse", "Manager"));
+});
+
 builder.Services.AddSession(options =>
 {
     options.IdleTimeout = TimeSpan.FromMinutes(30); // Set session timeout
@@ -13,6 +34,7 @@ builder.Services.AddSession(options =>
     options.Cookie.IsEssential = true;
     options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
 });
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -28,6 +50,8 @@ app.UseStaticFiles();
 
 app.UseRouting();
 app.UseSession();
+
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapRazorPages();
