@@ -1,4 +1,5 @@
 using BusinessLogic.Services;
+using BusinessLogic.Services.Interface;
 using DataAccess;
 using DataAccess.Repo;
 using DataAccess.UnitOfWorks;
@@ -20,6 +21,7 @@ builder.Services.AddScoped<IMedicalRecordService, MedicalRecordService>();
 builder.Services.AddScoped<IMedicationService, MedicationService>();
 builder.Services.AddScoped<IInventoryService, InventoryService>();
 builder.Services.AddScoped<ISchoolNurseService, SchoolNurseService>();
+builder.Services.AddScoped<IVaccinationParentService, VaccinationParentService>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
