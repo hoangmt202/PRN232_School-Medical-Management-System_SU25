@@ -1,4 +1,4 @@
-using BusinessObject.Entity;
+﻿using BusinessObject.Entity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,11 +9,6 @@ namespace BusinessLogic.Services
 {
     public interface IStudentService
     {
-        Task<StudentResponseDTO> GetStudentById(int id);
-        Task<List<StudentResponseDTO>> GetAll();
-        Task<StudentResponseDTO> CreateStudent(StudentRequestDTO studentDTO);
-        Task<StudentResponseDTO> Update(int id, StudentRequestDTO studentDTO);
-        Task<StudentResponseDTO> Delete(int id);
         Task<IEnumerable<Student>> GetAllStudentsAsync();
         Task<Student> GetStudentByIdAsync(int id);
         Task AddStudentAsync(Student student);
@@ -22,4 +17,3 @@ namespace BusinessLogic.Services
         Task<IEnumerable<Student>> GetStudentsByParentUserIdAsync(int parentUserId);
     }
 }
-
