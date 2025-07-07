@@ -309,3 +309,6 @@ body {
     box-shadow: none !important;
   }
 }
+.bg-light-subtle {
+    background-color: #f9fafc;
+}

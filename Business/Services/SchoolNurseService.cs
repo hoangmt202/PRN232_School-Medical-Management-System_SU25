@@ -1,9 +1,11 @@
-using BusinessLogic.DTOs;
+using BusinessLogic.DTOs.SchoolNurse;
 using BusinessObject.Entity;
 using DataAccess;
+using DataAccess.Repo;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace BusinessLogic.Services
@@ -115,3 +117,4 @@ namespace BusinessLogic.Services
         }
     }
 } 
+

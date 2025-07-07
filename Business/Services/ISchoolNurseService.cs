@@ -1,5 +1,9 @@
-using BusinessLogic.DTOs;
+
+using BusinessLogic.DTOs.SchoolNurse;
+using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace BusinessLogic.Services
@@ -12,4 +16,4 @@ namespace BusinessLogic.Services
         Task<SchoolNurseResponseDTO> Update(int id, SchoolNurseRequestDTO nurseDTO);
         Task<SchoolNurseResponseDTO> Delete(int id);
     }
-} 
+}

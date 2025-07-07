@@ -63,7 +63,11 @@ namespace DataAccess.Repo
         {
             return await _dbSet.AnyAsync(predicate);
         }
+        public virtual async Task<int> SaveChangesAsync()
+        {
+            return await _context.SaveChangesAsync();
 
+        }
         public async Task<IEnumerable<T>> FindAsync(Expression<Func<T, bool>> predicate, string includeProperties = "")
         {
             IQueryable<T> query = _dbSet;

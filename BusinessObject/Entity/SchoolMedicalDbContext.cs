@@ -21,6 +21,7 @@ public class SchoolMedicalDbContext : DbContext
     public DbSet<IncidentReport> IncidentReports => Set<IncidentReport>();
     public DbSet<HealthCheck> HealthChecks => Set<HealthCheck>();
     public DbSet<DrugStorage> DrugStorages => Set<DrugStorage>();
+    public DbSet<VaccinationPlan> VaccinationPlans => Set<VaccinationPlan>();
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         optionsBuilder.UseSqlServer(GetConnectionString());
@@ -52,7 +53,26 @@ public class SchoolMedicalDbContext : DbContext
         modelBuilder.Entity<Admin>()
             .HasIndex(a => a.UserId)
             .IsUnique();
+        modelBuilder.Entity<VaccinationPlan>(entity =>
+        {
+            entity.ToTable("VaccinationPlan");
 
+            entity.HasKey(e => e.Id);
+
+            entity.Property(e => e.VaccineName)
+                  .IsRequired()
+                  .HasMaxLength(255);
+
+            entity.Property(e => e.ScheduledDate)
+                  .IsRequired();
+
+            entity.Property(e => e.TargetGroup)
+                  .IsRequired()
+                  .HasMaxLength(255);
+
+            entity.Property(e => e.Notes)
+                  .HasMaxLength(2000); 
+        });
         modelBuilder.Entity<Parent>()
             .HasOne(p => p.User)
             .WithOne(u => u.Parent)
@@ -84,21 +104,32 @@ public class SchoolMedicalDbContext : DbContext
             .OnDelete(DeleteBehavior.Restrict);
 
         modelBuilder.Entity<MedicalRecord>()
+            .ToTable("medical_records")
             .HasOne(m => m.Student)
             .WithOne(s => s.MedicalRecord)
             .HasForeignKey<MedicalRecord>(m => m.StudentId)
             .OnDelete(DeleteBehavior.Cascade);
 
-        modelBuilder.Entity<Vaccination>()
-            .HasOne(v => v.Student)
-            .WithMany(s => s.Vaccinations)
-            .HasForeignKey(v => v.StudentId);
-
-        modelBuilder.Entity<VaccinationNotice>()
-            .HasOne(vn => vn.Student)
-            .WithMany(s => s.VaccinationNotices)
-            .HasForeignKey(vn => vn.StudentId);
-
+        modelBuilder.Entity<Vaccination>(entity =>
+        {
+          entity.HasOne(v => v.Student)
+                .WithMany(s => s.Vaccinations)
+                .HasForeignKey(v => v.StudentId);
+            entity.HasOne(e => e.Plan)
+               .WithMany(p => p.Vaccinations)
+               .HasForeignKey(e => e.VaccinePlanId)
+               .OnDelete(DeleteBehavior.Cascade);
+        });
+        modelBuilder.Entity<VaccinationNotice>(entity =>
+        {
+          entity.HasOne(vn => vn.Student)
+                .WithMany(s => s.VaccinationNotices)
+                .HasForeignKey(vn => vn.StudentId);
+            entity.HasOne(e => e.Plan)
+              .WithMany(p => p.Notices)
+              .HasForeignKey(e => e.VaccinationPlanId)
+              .OnDelete(DeleteBehavior.Cascade);
+        });
         modelBuilder.Entity<Medication>()
             .HasOne(m => m.Student)
             .WithMany(s => s.Medications)

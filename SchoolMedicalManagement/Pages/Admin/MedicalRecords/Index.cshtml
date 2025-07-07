@@ -1,0 +1,90 @@
+﻿@page "/admin/medical-record"
+@model SchoolMedicalManagement.Pages.Admin.MedicalRecords.IndexModel
+@{
+    ViewData["Title"] = "Manage Medical Records";
+}
+
+<div class="container-fluid py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-11 col-md-12">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-white border-bottom d-flex justify-content-between align-items-center">
+                    <div>
+                        <h4 class="mb-0">@ViewData["Title"]</h4>
+                        <small class="text-muted">Search, review, and delete student medical records</small>
+                    </div>
+                    <form method="get" class="d-flex">
+                        <input type="text" name="searchTerm" class="form-control form-control-sm me-2"
+                               placeholder="Search by name, allergy, disease..." value="@Model.SearchTerm" />
+                        <button type="submit" class="btn btn-sm btn-outline-primary">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </form>
+                </div>
+
+                <div class="card-body bg-light-subtle">
+                    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+                    {
+                        <div class="alert alert-danger" role="alert">@Model.ErrorMessage</div>
+                    }
+
+                    @if (!string.IsNullOrEmpty(Model.SuccessMessage))
+                    {
+                        <div class="alert alert-success" role="alert">@Model.SuccessMessage</div>
+                    }
+
+                    @if (Model.MedicalRecords.Any())
+                    {
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle text-sm">
+                                <thead class="thead-light">
+                                    <tr>
+                                        <th>Student</th>
+                                        <th>Allergies</th>
+                                        <th>Chronic Diseases</th>
+                                        <th>Treatment History</th>
+                                        <th>Physical Condition</th>
+                                        <th class="text-end">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var record in Model.MedicalRecords)
+                                    {
+                                        <tr class="bg-white border rounded shadow-sm">
+                                            <td>
+                                                <div class="d-flex flex-column">
+                                                    <span class="fw-bold">@record.StudentName</span>
+                                                    <small class="text-muted">ID: @record.StudentId</small>
+                                                </div>
+                                            </td>
+                                            <td>@(string.IsNullOrWhiteSpace(record.Allergies) ? "None" : record.Allergies)</td>
+                                            <td>@(string.IsNullOrWhiteSpace(record.ChronicDiseases) ? "None" : record.ChronicDiseases)</td>
+                                            <td>@(string.IsNullOrWhiteSpace(record.TreatmentHistory) ? "None" : record.TreatmentHistory)</td>
+                                            <td>@(string.IsNullOrWhiteSpace(record.PhysicalCondition) ? "None" : record.PhysicalCondition)</td>
+                                            <td class="text-end">
+                                                <form method="post" asp-page-handler="Delete" asp-route-id="@record.Id"
+                                                      onsubmit="return confirm('Are you sure you want to delete this medical record?');">
+                                                    <button type="submit" class="btn btn-sm btn-outline-danger">
+                                                        <i class="fas fa-trash-alt me-1"></i> Delete
+                                                    </button>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="text-center py-5">
+                            <i class="fas fa-notes-medical fa-3x text-secondary mb-3"></i>
+                            <h5 class="text-secondary">No Medical Records Found</h5>
+                            <p class="text-sm text-muted">Try adjusting your search or check back later.</p>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

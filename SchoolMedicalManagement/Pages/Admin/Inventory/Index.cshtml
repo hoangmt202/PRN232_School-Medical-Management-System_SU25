@@ -1,0 +1,253 @@
+﻿@page "/admin/Inventory"
+@using BusinessLogic.DTOs.DrugStorage
+@model SchoolMedicalManagement.Pages.Admin.Inventory.IndexModel
+@section Scripts {
+    <script>
+        function submitAddDrug() {
+            const data = {
+                medicationName: $('#addMedicationName').val(),
+                dosageForm: $('#addDosageForm').val(),
+                strength: $('#addStrength').val(),
+                quantity: parseInt($('#addQuantity').val()),
+                expirationDate: $('#addExpirationDate').val(),
+                manufacturer: $('#addManufacturer').val(),
+                storageLocation: $('#addStorageLocation').val(),
+                managedBy: parseInt($('#addManagedBy').val())
+            };
+
+            if (!data.medicationName || data.quantity <= 0 || data.managedBy <= 0 || new Date(data.expirationDate) <= new Date()) {
+                alert("Please fill all required fields correctly.");
+                return;
+            }
+
+            fetch('?handler=Add', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            }).then(res => res.json())
+                .then(res => {
+                    if (res.success) location.reload();
+                    else alert("Error adding drug");
+                });
+        }
+
+        function submitEditDrug() {
+            const data = {
+                id: parseInt($('#editId').val()),
+                medicationName: $('#editMedicationName').val(),
+                dosageForm: $('#editDosageForm').val(),
+                strength: $('#editStrength').val(),
+                quantity: parseInt($('#editQuantity').val()),
+                expirationDate: $('#editExpirationDate').val(),
+                manufacturer: $('#editManufacturer').val(),
+                storageLocation: $('#editStorageLocation').val(),
+                managedBy: parseInt($('#editManagedBy').val())
+            };
+
+            if (!data.medicationName || data.quantity <= 0 || data.managedBy <= 0 || new Date(data.expirationDate) <= new Date()) {
+                alert("Please fill all required fields correctly.");
+                return;
+            }
+
+            fetch('?handler=Edit', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            }).then(res => res.json())
+                .then(res => {
+                    if (res.success) location.reload();
+                    else alert("Error updating drug");
+                });
+        }
+        function deleteDrug(id) {
+            if (!confirm("Are you sure you want to delete this drug?")) return;
+
+            fetch(`?handler=Delete&id=${id}`, {
+                method: 'POST'
+            }).then(res => {
+                if (res.ok) location.reload();
+                else alert("Delete failed");
+            });
+        }
+    </script>
+}
+
+<section class="container py-4">
+    <h2 class="mb-4">📦 Drug Inventory Dashboard</h2>
+
+    @if (Model.Alerts.Any())
+    {
+        <div class="alert alert-warning shadow-sm rounded">
+            <strong>⚠️ Alerts:</strong>
+            <ul class="mb-0">
+                @foreach (var alert in Model.Alerts)
+                {
+                    <li>@alert.Message</li>
+                }
+            </ul>
+        </div>
+    }
+
+    <div class="table-responsive shadow-sm">
+        <table class="table table-hover table-bordered align-middle text-sm bg-white">
+            <thead class="table-light">
+                <tr>
+                    <th>Name</th>
+                    <th>Dosage Form</th>
+                    <th>Quantity</th>
+                    <th>Expiration</th>
+                    <th>Managed By</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var drug in Model.Drugs)
+                {
+                    <tr>
+                        <td class="fw-medium">@drug.MedicationName</td>
+                        <td>@drug.DosageForm</td>
+                        <td>@drug.Quantity</td>
+                        <td class="@(drug.ExpirationDate < DateTime.Now ? "text-danger" : "")">
+                            @drug.ExpirationDate.ToString("MMM dd, yyyy")
+                        </td>
+                        <td>@drug.ManagedByName</td>
+                        <td>
+                            <button class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal"
+                                    data-bs-target="#editDrugModal"
+                                    onclick="$('#editId').val(@drug.Id); $('#editMedicationName').val('@drug.MedicationName'); $('#editDosageForm').val('@drug.DosageForm'); $('#editQuantity').val(@drug.Quantity); $('#editManagedBy').val(@drug.ManagedBy);">
+                                ✏️ Edit
+                            </button>
+                            <button class="btn btn-sm btn-outline-danger" onclick="deleteDrug(@drug.Id)">
+                                🗑 Delete
+                            </button>
+                            <a href="/Admin/Inventory/Detail?id=@drug.Id" class="btn btn-sm btn-outline-info">
+                                👁 View
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <button class="btn btn-primary mt-3" data-bs-toggle="modal" data-bs-target="#addDrugModal">
+        <i class="fas fa-plus"></i> Add New Drug
+    </button>
+</section>
+
+<!-- Add Drug Modal -->
+<div class="modal fade" id="addDrugModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">➕ Add Drug</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body row g-3">
+                <div class="col-md-6">
+                    <label class="form-label">Medication Name</label>
+                    <input id="addMedicationName" class="form-control" />
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Dosage Form</label>
+                    <input id="addDosageForm" class="form-control" />
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Strength</label>
+                    <input id="addStrength" class="form-control" />
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Quantity</label>
+                    <input id="addQuantity" type="number" min="1" step="1" class="form-control" />
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Expiration Date</label>
+                    <input id="addExpirationDate" type="date" class="form-control" />
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Manufacturer</label>
+                    <input id="addManufacturer" class="form-control" />
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Storage Location</label>
+                    <input id="addStorageLocation" class="form-control" />
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Managed By</label>
+                    <select id="addManagedBy" class="form-select">
+                        <option value="">-- Select Nurse --</option>
+                        @foreach (var nurse in Model.Nurses)
+                        {
+                            <option value="@nurse.Id">@nurse.FullName</option>
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button onclick="submitAddDrug()" class="btn btn-success">Save</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Drug Modal -->
+<div class="modal fade" id="editDrugModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">✏️ Edit Drug</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body row g-3">
+                <input type="hidden" id="editId" />
+                <div class="col-md-6">
+                    <label class="form-label">Medication Name</label>
+                    <input id="editMedicationName" class="form-control" />
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Dosage Form</label>
+                    <input id="editDosageForm" class="form-control" />
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Strength</label>
+                    <input id="editStrength" class="form-control" />
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Quantity</label>
+                    <input id="editQuantity" type="number" min="1" step="1" class="form-control" />
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Expiration Date</label>
+                    <input id="editExpirationDate" type="date" class="form-control" />
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Manufacturer</label>
+                    <input id="editManufacturer" class="form-control" />
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Storage Location</label>
+                    <input id="editStorageLocation" class="form-control" />
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Date Received</label>
+                    <input id="editDateReceived" type="date" class="form-control" />
+                </div>
+                <div class="col-md-12">
+                    <label class="form-label">Managed By</label>
+                    <select id="editManagedBy" class="form-select">
+                        <option value="">-- Select Nurse --</option>
+                        @foreach (var nurse in Model.Nurses)
+                        {
+                            <option value="@nurse.Id">@nurse.FullName</option>
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button onclick="submitEditDrug()" class="btn btn-primary">Update</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
