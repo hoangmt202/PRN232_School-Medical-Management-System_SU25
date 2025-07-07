@@ -1,5 +1,6 @@
 using BusinessLogic.Services;
 using BusinessObject.Entity;
+
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddHttpContextAccessor();
 
@@ -54,9 +55,5 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapRazorPages();
-app.MapGet("/", context =>
-{
-    context.Response.Redirect("/admin/Inventory");
-    return Task.CompletedTask;
-});
+
 app.Run();

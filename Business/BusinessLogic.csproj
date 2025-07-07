@@ -7,14 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="AutoMapper" Version="14.0.0" />
+    <ProjectReference Include="..\Data\DataAccess.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-
     <PackageReference Include="AutoMapper" Version="14.0.0" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.0" />
-
   </ItemGroup>
 
 </Project>
