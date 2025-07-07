@@ -1,3 +1,4 @@
+using BusinessLogic.DTOs;
 using BusinessLogic.DTOs.SchoolNurse;
 using System;
 using System.Collections.Generic;
@@ -15,5 +16,11 @@ namespace BusinessLogic.Services
         Task<SchoolNurseDto> CreateSchoolNurseAsync(CreateSchoolNurseDto createDto);
         Task<SchoolNurseDto?> UpdateSchoolNurseAsync(int id, UpdateSchoolNurseDto updateDto);
         Task<bool> DeleteSchoolNurseAsync(int id);
+        Task<SchoolNurseResponseDTO> GetSchoolNurseById(int id);
+        Task<List<SchoolNurseResponseDTO>> GetAll();
+        Task<SchoolNurseResponseDTO> CreateSchoolNurse(SchoolNurseRequestDTO nurseDTO);
+        Task<SchoolNurseResponseDTO> Update(int id, SchoolNurseRequestDTO nurseDTO);
+        Task<SchoolNurseResponseDTO> Delete(int id);
+
     }
 }
