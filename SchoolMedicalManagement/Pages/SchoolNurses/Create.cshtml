@@ -1,0 +1,28 @@
+@page
+@model SchoolMedicalManagement.Pages.SchoolNurses.CreateModel
+@{
+    ViewData["Title"] = "Create School Nurse";
+}
+<h1>Create School Nurse</h1>
+<form method="post">
+    <div class="form-group">
+        <label asp-for="SchoolNurse.FullName" class="control-label"></label>
+        <input asp-for="SchoolNurse.FullName" class="form-control" />
+        <span asp-validation-for="SchoolNurse.FullName" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="SchoolNurse.PhoneNumber" class="control-label"></label>
+        <input asp-for="SchoolNurse.PhoneNumber" class="form-control" />
+        <span asp-validation-for="SchoolNurse.PhoneNumber" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="SchoolNurse.UserId" class="control-label"></label>
+        <input asp-for="SchoolNurse.UserId" class="form-control" />
+        <span asp-validation-for="SchoolNurse.UserId" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-primary">Create</button>
+    <a asp-page="Index" class="btn btn-secondary">Back to List</a>
+</form>
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+} 
