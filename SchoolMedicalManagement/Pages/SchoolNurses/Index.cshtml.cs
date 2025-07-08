@@ -14,7 +14,7 @@ namespace SchoolMedicalManagement.Pages.SchoolNurses
         {
             using var client = new HttpClient();
             // Adjust the API base URL as needed
-            var apiUrl = "https://localhost:5001/api/SchoolNurse";
+            var apiUrl = "https://localhost:5234/api/SchoolNurse";
             var nurses = await client.GetFromJsonAsync<List<SchoolNurseDto>>(apiUrl);
             if (nurses != null)
                 SchoolNurses = nurses;

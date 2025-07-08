@@ -14,7 +14,7 @@ namespace SchoolMedicalManagement.Pages.SchoolNurses
         public async Task<IActionResult> OnGetAsync(int id)
         {
             using var client = new HttpClient();
-            var apiUrl = $"https://localhost:5001/api/SchoolNurse/{id}";
+            var apiUrl = $"https://localhost:5234/api/SchoolNurse/{id}";
             var nurse = await client.GetFromJsonAsync<SchoolNurseDto>(apiUrl);
             if (nurse == null)
                 return NotFound();
@@ -27,7 +27,7 @@ namespace SchoolMedicalManagement.Pages.SchoolNurses
             if (!ModelState.IsValid)
                 return Page();
             using var client = new HttpClient();
-            var apiUrl = $"https://localhost:5001/api/SchoolNurse/{SchoolNurse.Id}";
+            var apiUrl = $"https://localhost:5234/api/SchoolNurse/{SchoolNurse.Id}";
             var response = await client.PutAsJsonAsync(apiUrl, SchoolNurse);
             if (response.IsSuccessStatusCode)
             {

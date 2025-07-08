@@ -20,7 +20,7 @@ namespace SchoolMedicalManagement.Pages.SchoolNurses
             if (!ModelState.IsValid)
                 return Page();
             using var client = new HttpClient();
-            var apiUrl = "https://localhost:5001/api/SchoolNurse";
+            var apiUrl = "https://localhost:5234/api/SchoolNurse";
             var response = await client.PostAsJsonAsync(apiUrl, SchoolNurse);
             if (response.IsSuccessStatusCode)
             {
