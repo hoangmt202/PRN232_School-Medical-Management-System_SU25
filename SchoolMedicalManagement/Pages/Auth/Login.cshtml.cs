@@ -185,7 +185,23 @@ namespace SchoolMedicalManagement.Pages.Auth
                         HttpContext.Session.SetString("UserId", userId);
 
                         _logger.LogInformation("User logged in successfully.");
-                        return LocalRedirect("/Index");
+                        // Role-based redirect
+                        if (loginResponse.Role == "Admin")
+                        {
+                            return LocalRedirect("/Index");
+                        }
+                        else if (loginResponse.Role == "Parent")
+                        {
+                            return LocalRedirect($"/Parents/Details/{userId}");
+                        }
+                        else if (loginResponse.Role == "Nurse")
+                        {
+                            return LocalRedirect($"/SchoolNurses/Details/{userId}");
+                        }
+                        else
+                        {
+                            return LocalRedirect("/Index");
+                        }
                     }
                     else
                     {

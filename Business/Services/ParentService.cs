@@ -20,6 +20,14 @@ namespace BusinessLogic.Services
 
         public async Task<ParentResponseDTO> CreateParentWithUser(ParentRequestDTO parentDTO)
         {
+            // If UserId is not set but User object is provided, create the User first
+            if (parentDTO.UserId == 0 && parentDTO.User != null)
+            {
+                await _unitOfWork.UserRepository.AddAsync(parentDTO.User);
+                await _unitOfWork.SaveChangesAsync();
+                parentDTO.UserId = parentDTO.User.Id; // EF will set the Id after SaveChanges
+            }
+
             var parent = new Parent
             {
                 FullName = parentDTO.FullName,
@@ -108,6 +116,7 @@ namespace BusinessLogic.Services
             parent.PhoneNumber = parentDTO.PhoneNumber;
             parent.Address = parentDTO.Address;
             parent.UserId = parentDTO.UserId;
+            // Do NOT update any User fields
 
             _unitOfWork.ParentRepository.Update(parent);
             await _unitOfWork.SaveChangesAsync();

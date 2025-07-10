@@ -13,7 +13,7 @@ namespace SchoolMedicalManagement.Pages.Students
         public async Task<IActionResult> OnGetAsync(int id)
         {
             using var client = new HttpClient();
-            var apiUrl = $"https://localhost:5001/api/Student/{id}";
+            var apiUrl = $"https://localhost:5234/api/Student/{id}";
             var student = await client.GetFromJsonAsync<StudentDto>(apiUrl);
             if (student == null)
                 return NotFound();

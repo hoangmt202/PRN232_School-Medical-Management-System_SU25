@@ -14,7 +14,7 @@ namespace SchoolMedicalManagement.Pages.Students
         public async Task<IActionResult> OnGetAsync(int id)
         {
             using var client = new HttpClient();
-            var apiUrl = $"https://localhost:5001/api/Student/{id}";
+            var apiUrl = $"https://localhost:5234/api/Student/{id}";
             var student = await client.GetFromJsonAsync<StudentDto>(apiUrl);
             if (student == null)
                 return NotFound();
@@ -25,7 +25,7 @@ namespace SchoolMedicalManagement.Pages.Students
         public async Task<IActionResult> OnPostAsync()
         {
             using var client = new HttpClient();
-            var apiUrl = $"https://localhost:5001/api/Student/{Student.Id}";
+            var apiUrl = $"https://localhost:5234/api/Student/{Student.Id}";
             var response = await client.DeleteAsync(apiUrl);
             if (response.IsSuccessStatusCode)
             {

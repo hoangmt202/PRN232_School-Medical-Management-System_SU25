@@ -12,13 +12,13 @@ html {
   box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
 }
 
-html {
-  position: relative;
-  min-height: 100%;
+html, body {
+  min-height: 100vh;
+  height: auto;
 }
 
 body {
-  margin-bottom: 60px;
+  margin: 0;
   font-family: 'Inter', sans-serif;
   background-color: #f8f9fa;
 }
@@ -308,4 +308,19 @@ body {
     border: 1px solid #ddd !important;
     box-shadow: none !important;
   }
+}
+
+main[role="main"] {
+  margin-top: 80px;
+  margin-bottom: 0;
+  padding-top: 32px;
+  padding-bottom: 32px;
+  box-sizing: border-box;
+  min-height: 0;
+  height: auto;
+  overflow: visible;
+}
+
+footer.footer {
+  /* Remove flex-shrink and flex properties */
 }
