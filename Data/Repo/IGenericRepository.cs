@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -22,5 +23,6 @@ namespace DataAccess.Repo
         Task<bool> AnyAsync(Expression<Func<T, bool>> predicate);
         Task<IEnumerable<T>> FindAsync(Expression<Func<T, bool>> predicate, string includeProperties = "");
         Task<int> CountAsync(Expression<Func<T, bool>> predicate = null);
+        Task<int> SaveChangesAsync();
     }
 }

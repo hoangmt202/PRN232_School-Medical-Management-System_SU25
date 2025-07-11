@@ -1,5 +1,8 @@
+using BusinessLogic.Mapper;
 using BusinessLogic.Services;
+using BusinessObject.Entity;
 using DataAccess;
+using DataAccess.Repo;
 using DataAccess.UnitOfWorks;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.OData;
@@ -29,13 +32,19 @@ builder.Services.AddControllers()
 IConfiguration configuration = new ConfigurationBuilder()
             .SetBasePath(Directory.GetCurrentDirectory())
             .AddJsonFile("appsettings.json", true, true).Build();
-
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
+builder.Services.AddScoped<IGenericRepository<Student>, GenericRepository<Student>>();
+builder.Services.AddScoped<IGenericRepository<Parent>, GenericRepository<Parent>>();
 builder.Services.AddScoped<IUnitOfWorks, UnitOfWork>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IParentService, ParentService>();
+builder.Services.AddScoped<ISchoolNurseService, SchoolNurseService>();
+builder.Services.AddScoped<IInventoryService, InventoryService>();
+builder.Services.AddScoped<IStudentService, StudentService>();
+builder.Services.AddScoped<IVaccinationParentService, VaccinationParentService>();
 builder.Services.AddDbContext<SchoolMedicalDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
 );
@@ -65,7 +74,16 @@ builder.Services.AddAuthorization(options =>
     options.AddPolicy("MedicalStaff", policy => policy.RequireRole("Admin", "SchoolNurse", "Manager"));
     options.AddPolicy("ParentAccess", policy => policy.RequireRole("Admin", "Parent"));
 });
-
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", policy =>
+    {
+        policy.WithOrigins("https://localhost:7199") // Adjust for your frontend
+              .AllowAnyHeader()
+              .AllowAnyMethod()
+              .AllowCredentials();
+    });
+});
 // Add SWAGGER JWT
 builder.Services.AddSwaggerGen(c =>
 {
@@ -106,7 +124,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
+app.UseCors("AllowAll");
 app.UseHttpsRedirection();
 
 app.UseAuthentication();

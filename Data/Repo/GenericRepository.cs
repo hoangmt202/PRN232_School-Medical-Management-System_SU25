@@ -82,6 +82,11 @@ namespace DataAccess.Repo
             }
             return query;
         }
+        public virtual async Task<int> SaveChangesAsync()
+        {
+            return await _context.SaveChangesAsync();
+
+        }
         public async Task<int> CountAsync(Expression<Func<T, bool>> predicate = null)
         {
             try

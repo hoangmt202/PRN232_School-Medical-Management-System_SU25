@@ -12,7 +12,8 @@
                 expirationDate: $('#addExpirationDate').val(),
                 manufacturer: $('#addManufacturer').val(),
                 storageLocation: $('#addStorageLocation').val(),
-                managedBy: parseInt($('#addManagedBy').val())
+                managedBy: parseInt($('#addManagedBy').val()),
+                notes: $('#addNotes').val() ?? ''
             };
 
             if (!data.medicationName || data.quantity <= 0 || data.managedBy <= 0 || new Date(data.expirationDate) <= new Date()) {
@@ -30,7 +31,6 @@
                     else alert("Error adding drug");
                 });
         }
-
         function submitEditDrug() {
             const data = {
                 id: parseInt($('#editId').val()),
@@ -41,7 +41,8 @@
                 expirationDate: $('#editExpirationDate').val(),
                 manufacturer: $('#editManufacturer').val(),
                 storageLocation: $('#editStorageLocation').val(),
-                managedBy: parseInt($('#editManagedBy').val())
+                managedBy: parseInt($('#editManagedBy').val()),
+                notes: $('#addNotes').val() ?? ''
             };
 
             if (!data.medicationName || data.quantity <= 0 || data.managedBy <= 0 || new Date(data.expirationDate) <= new Date()) {
@@ -71,6 +72,7 @@
         }
     </script>
 }
+
 
 <section class="container py-4">
     <h2 class="mb-4">📦 Drug Inventory Dashboard</h2>

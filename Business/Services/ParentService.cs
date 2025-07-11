@@ -1,4 +1,6 @@
-﻿using BusinessLogic.DTOs;
+﻿using AutoMapper;
+using BusinessLogic.DTOs;
+using BusinessLogic.DTOs.DrugStorage;
 using BusinessObject.Entity;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -12,10 +14,12 @@ namespace BusinessLogic.Services
     public class ParentService : IParentService
     {
         private readonly DataAccess.IUnitOfWorks _unitOfWork;
+        private readonly IMapper _mapper;
 
-        public ParentService(DataAccess.IUnitOfWorks unitOfWork)
+        public ParentService(DataAccess.IUnitOfWorks unitOfWork, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
+            _mapper = mapper;
         }
 
         public async Task<ParentResponseDTO> CreateParentWithUser(ParentRequestDTO parentDTO)
@@ -72,6 +76,12 @@ namespace BusinessLogic.Services
                 User = p.User,
                 Students = p.Students
             }).ToList();
+        }
+        public async Task<ParentDto?> GetParentByUserIdAsync(int userId)
+        {
+            var parent = await _unitOfWork.ParentRepository.GetByUserIdAsync(userId);
+            var parentdto = _mapper.Map<ParentDto>(parent);
+            return parentdto;
         }
 
         public async Task<ParentResponseDTO> GetParentByUserId(int UserId)
@@ -144,5 +154,6 @@ namespace BusinessLogic.Services
                 Students = parent.Students
             };
         }
+
     }
 }

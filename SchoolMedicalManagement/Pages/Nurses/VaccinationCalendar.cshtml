@@ -1,0 +1,43 @@
+﻿@page "/Nurse/Vaccination"
+@model SchoolMedicalManagement.Pages.Nurses.VaccinationCalendarModel
+@{
+}
+@{
+    ViewData["Title"] = "Vaccination Calendar";
+}
+
+<h2>📅 Nurse Vaccination Calendar</h2>
+
+@if (!string.IsNullOrEmpty(Model.Message))
+{
+    <div class="alert alert-info">@Model.Message</div>
+}
+
+<table class="table table-bordered table-hover bg-white">
+    <thead class="table-light">
+        <tr>
+            <th>Date</th>
+            <th>Vaccine</th>
+            <th>Target Group</th>
+            <th>Notes</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var plan in Model.Plans)
+        {
+            <tr>
+                <td>@plan.ScheduledDate.ToString("MMM dd, yyyy")</td>
+                <td>@plan.VaccineName</td>
+                <td>@plan.TargetGroup</td>
+                <td>@plan.Notes</td>
+                <td>
+                    <form method="post" asp-page-handler="SendNotices">
+                        <input type="hidden" name="planId" value="@plan.Id" />
+                        <button type="submit" class="btn btn-outline-primary btn-sm">📤 Send Notices</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

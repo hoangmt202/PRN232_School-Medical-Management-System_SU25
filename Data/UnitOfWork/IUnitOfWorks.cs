@@ -1,5 +1,6 @@
 ﻿using BusinessObject.Entity;
 using DataAccess.Repo;
+using DataAccess.Repo.Interface;
 using Microsoft.EntityFrameworkCore.Storage;
 using System;
 using System.Collections.Generic;
@@ -18,13 +19,15 @@ namespace DataAccess
         IGenericRepository<Manager> ManagerRepository { get; }
         IMedicalRecordRepository MedicalRecordRepository { get; }
         IGenericRepository<Medication> MedicationRepository { get; }
-        IGenericRepository<Parent> ParentRepository { get; }
+        IParentRepository ParentRepository { get; }
         ISchoolNurseRepository SchoolNurseRepository { get; }
         IInventoryRepository InventoryRepository { get; }
-        IGenericRepository<Student> StudentRepository { get; }
+        IStudentRepository StudentRepository { get; }
         IGenericRepository<User> UserRepository { get; }
-        IGenericRepository<Vaccination> VaccinationRepository { get; }
-        IGenericRepository<VaccinationNotice> VaccinationNoticeRepository { get; }
+        IVaccinationRepository VaccinationRepository { get; }
+        IVaccinationNoticeRepository VaccinationNoticeRepository { get; }
+        IVaccinationPlanRepository VaccinationPlanRepository { get; }
+        IGenericRepository<Student> StudentRepo {  get; }
         Task<int> SaveChangesAsync();
         void Save();
     }

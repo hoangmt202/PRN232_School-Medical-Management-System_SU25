@@ -1,5 +1,6 @@
 ﻿using BusinessObject.Entity;
 using DataAccess.Repo;
+using DataAccess.Repo.Interface;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,28 +24,32 @@ namespace DataAccess.UnitOfWorks
         private IGenericRepository<IncidentReport> _incidentReports;
         private IGenericRepository<Manager> _managers;
         private IGenericRepository<Medication> _medications;
-        private IGenericRepository<Parent> _parents;
+        private IParentRepository _parents;
+        private IGenericRepository<Student> _student;
         private ISchoolNurseRepository _schoolNurses;
-        private IGenericRepository<Student> _students;
+        private IStudentRepository _students;
         private IGenericRepository<User> _users;
-        private IGenericRepository<Vaccination> _vaccinations;
-        private IGenericRepository<VaccinationNotice> _vaccinationNotices;
+        private IVaccinationRepository _vaccinations;
+        private IVaccinationNoticeRepository _vaccinationNotices;
+        private IVaccinationPlanRepository _vaccinationPlan;
         private IInventoryRepository _inventory;
         private IMedicalRecordRepository _medicalRecords;
         public IGenericRepository<Admin> AdminRepository => _admins ??= new GenericRepository<Admin>(_context);
         public IGenericRepository<DrugStorage> DrugStorageRepository => _drugStorages ??= new GenericRepository<DrugStorage>(_context);
-        public IGenericRepository<HealthCheck> HealthCheckRepository => _healthChecks ??= new GenericRepository<HealthCheck>(_context);
+        public IGenericRepository<HealthCheck> HealthCheckRepository => _healthChecks ??= new GenericRepository<HealthCheck>(_context); 
+        public IGenericRepository<Student> StudentRepo => _student ??= new GenericRepository<Student>(_context);
         public IGenericRepository<IncidentReport> IncidentReportRepository => _incidentReports ??= new GenericRepository<IncidentReport>(_context);
         public IGenericRepository<Manager> ManagerRepository => _managers ??= new GenericRepository<Manager>(_context);
         public IMedicalRecordRepository MedicalRecordRepository => _medicalRecords ??= new MedicalRecordRepository(_context);
         public IGenericRepository<Medication> MedicationRepository => _medications ??= new GenericRepository<Medication>(_context);
-        public IGenericRepository<Parent> ParentRepository => _parents ??= new GenericRepository<Parent>(_context);
+        public IParentRepository ParentRepository => _parents ??= new ParentRepository(_context);
         public ISchoolNurseRepository SchoolNurseRepository => _schoolNurses ??= new SchoolNurseRepository(_context);
-        public IGenericRepository<Student> StudentRepository => _students ??= new GenericRepository<Student>(_context);
+        public IStudentRepository StudentRepository => _students ??= new StudentRepository(_context);
         public IGenericRepository<User> UserRepository => _users ??= new GenericRepository<User>(_context);
-        public IGenericRepository<Vaccination> VaccinationRepository => _vaccinations ??= new GenericRepository<Vaccination>(_context);
+        public IVaccinationRepository VaccinationRepository => _vaccinations ??= new VaccinationRepository(_context);
+        public IVaccinationPlanRepository VaccinationPlanRepository => _vaccinationPlan ??= new VaccinationPlanRepository(_context);
         public IInventoryRepository InventoryRepository => _inventory ??= new InventoryRepository(_context);
-        public IGenericRepository<VaccinationNotice> VaccinationNoticeRepository => _vaccinationNotices ??= new GenericRepository<VaccinationNotice>(_context);
+        public IVaccinationNoticeRepository VaccinationNoticeRepository => _vaccinationNotices ??= new VaccinationNoticeRepository(_context);
 
         public async Task<int> SaveChangesAsync()
         {

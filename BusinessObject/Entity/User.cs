@@ -16,7 +16,6 @@ namespace BusinessObject.Entity
         public string PasswordHash { get; set; } = null!;
         public string Email { get; set; } = null!;
         public string Role { get; set; } = null!;
-        [Timestamp]
         [Column("created_at")]
         public DateTime CreatedAt { get; set; }
 
