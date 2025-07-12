@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace BusinessObject.Entity
 {
+    [Table("medical_records")]
     public class MedicalRecord
     {
         public int Id { get; set; }

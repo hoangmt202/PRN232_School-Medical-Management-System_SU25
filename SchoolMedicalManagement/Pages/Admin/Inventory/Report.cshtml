@@ -1,0 +1,109 @@
+﻿@page
+@model SchoolMedicalManagement.Pages.Admin.Inventory.ReportModel
+@{
+    ViewData["Title"] = "Drug Inventory Report";
+}
+
+<h2 class="mb-4">📊 Drug Inventory Report</h2>
+
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card bg-light border-info">
+            <div class="card-body text-center">
+                <h5 class="card-title">📦 Total Items</h5>
+                <p class="display-6">@Model.Report.TotalItems</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-light border-warning">
+            <div class="card-body text-center">
+                <h5 class="card-title">⚠️ Expiring Soon</h5>
+                <p class="display-6">@Model.Report.ExpiringItems</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-light border-danger">
+            <div class="card-body text-center">
+                <h5 class="card-title">❌ Expired</h5>
+                <p class="display-6">@Model.Report.ExpiredItems</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-light border-secondary">
+            <div class="card-body text-center">
+                <h5 class="card-title">💊 Low Stock</h5>
+                <p class="display-6">@Model.Report.LowStockItems</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<hr />
+
+<h4>📍 Location Summary</h4>
+<table class="table table-bordered table-sm">
+    <thead class="table-light">
+        <tr><th>Location</th><th>Count</th></tr>
+    </thead>
+    <tbody>
+        @foreach (var loc in Model.Report.LocationSummary)
+        {
+            <tr><td>@loc.Key</td><td>@loc.Value</td></tr>
+        }
+    </tbody>
+</table>
+
+<h4>💊 Dosage Form Summary</h4>
+<table class="table table-bordered table-sm">
+    <thead class="table-light">
+        <tr><th>Dosage Form</th><th>Count</th></tr>
+    </thead>
+    <tbody>
+        @foreach (var form in Model.Report.DosageFormSummary)
+        {
+            <tr><td>@form.Key</td><td>@form.Value</td></tr>
+        }
+    </tbody>
+</table>
+
+@if (Model.Report.LowStockDrugs.Any())
+{
+    <h4 class="mt-4 text-danger">⚠️ Low Stock Drugs</h4>
+    <ul class="list-group mb-3">
+        @foreach (var d in Model.Report.LowStockDrugs)
+        {
+            <li class="list-group-item">
+                <strong>@d.MedicationName</strong> - Quantity: @d.Quantity
+            </li>
+        }
+    </ul>
+}
+
+@if (Model.Report.ExpiringDrugs.Any())
+{
+    <h4 class="mt-4 text-warning">⏳ Expiring Soon</h4>
+    <ul class="list-group mb-3">
+        @foreach (var d in Model.Report.ExpiringDrugs)
+        {
+            <li class="list-group-item">
+                <strong>@d.MedicationName</strong> - Expires: @d.ExpirationDate.ToString("yyyy-MM-dd")
+            </li>
+        }
+    </ul>
+}
+
+@if (Model.Report.ExpiredDrugs.Any())
+{
+    <h4 class="mt-4 text-danger">❌ Expired Drugs</h4>
+    <ul class="list-group mb-3">
+        @foreach (var d in Model.Report.ExpiredDrugs)
+        {
+            <li class="list-group-item">
+                <strong>@d.MedicationName</strong> - Expired on: @d.ExpirationDate.ToString("yyyy-MM-dd")
+            </li>
+        }
+    </ul>
+}

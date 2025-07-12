@@ -45,6 +45,7 @@ builder.Services.AddScoped<ISchoolNurseService, SchoolNurseService>();
 builder.Services.AddScoped<IInventoryService, InventoryService>();
 builder.Services.AddScoped<IStudentService, StudentService>();
 builder.Services.AddScoped<IVaccinationParentService, VaccinationParentService>();
+builder.Services.AddScoped<IReportService, ReportService>();
 builder.Services.AddDbContext<SchoolMedicalDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
 );

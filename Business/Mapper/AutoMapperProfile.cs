@@ -24,6 +24,7 @@ namespace BusinessLogic.Mapper
             CreateMap<DrugStorage, CreateDrugStorageDto>().ReverseMap();
             CreateMap<DrugStorage, UpdateDrugStorageDto>().ReverseMap();
             CreateMap<InventoryAlert, InventoryAlertDto>().ReverseMap();
+            CreateMap<InventoryReport, InventoryReportDto>().ReverseMap();
             CreateMap<VaccinationPlan, VaccinationPlanDto>().ReverseMap();
             CreateMap<Vaccination, VaccinationRecordDto>().ReverseMap();
         }

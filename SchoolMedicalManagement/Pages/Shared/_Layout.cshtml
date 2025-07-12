@@ -46,6 +46,26 @@
                                 </ul>
                             </li>
                         }
+                        @if (Context.Session.GetString("UserRole") == "Admin")
+                        {
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="adminDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fas fa-user-shield me-1"></i> Admin
+                                </a>
+                                <ul class="dropdown-menu" aria-labelledby="adminDropdown">
+                                    <li>
+                                        <a class="dropdown-item" asp-page="/Admin/Dashboard">
+                                            <i class="fas fa-chart-bar me-2"></i> Dashboard
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" asp-page="/Admin/Inventory/Report">
+                                            <i class="fas fa-pills me-2"></i> DrugStorage Report
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                        }
 
                         @* Health Records Section (conditional) *@
                         <li class="nav-item dropdown">
@@ -189,7 +209,7 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
-
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
