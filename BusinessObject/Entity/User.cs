@@ -17,7 +17,7 @@ namespace BusinessObject.Entity
         public string Email { get; set; } = null!;
         public string Role { get; set; } = null!;
         [Column("created_at")]
-        public DateTime CreatedAt { get; set; }
+        public DateTime CreatedAt { get; set; } = DateTime.Now;
 
         public Parent? Parent { get; set; }
         public SchoolNurse? SchoolNurse { get; set; }
