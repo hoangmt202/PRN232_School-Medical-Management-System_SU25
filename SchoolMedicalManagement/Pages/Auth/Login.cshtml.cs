@@ -64,7 +64,8 @@ namespace SchoolMedicalManagement.Pages.Auth
             {
                 // Create an HTTP client
                 var client = _httpClientFactory.CreateClient();
-                client.BaseAddress = new Uri("http://localhost:5234");
+                var apiBaseUrl = _configuration["ApiSettings:BaseUrl"] ?? "http://localhost:5234";
+                client.BaseAddress = new Uri(apiBaseUrl);
 
                 // Prepare the login request payload
                 var loginRequest = new
@@ -212,8 +213,25 @@ namespace SchoolMedicalManagement.Pages.Auth
                 else
                 {
                     var errorContent = await response.Content.ReadAsStringAsync();
-                    var errorResponse = JsonSerializer.Deserialize<ErrorResponse>(errorContent);
-                    ModelState.AddModelError(string.Empty, errorResponse?.Message ?? "Wrong password !! Try again!!.");
+                    _logger.LogError($"API Error Response: {errorContent}");
+                    
+                    // Check if the response is HTML (error page) instead of JSON
+                    if (errorContent.TrimStart().StartsWith("<"))
+                    {
+                        ModelState.AddModelError(string.Empty, "Server error occurred. Please try again later.");
+                        return Page();
+                    }
+                    
+                    try
+                    {
+                        var errorResponse = JsonSerializer.Deserialize<ErrorResponse>(errorContent);
+                        ModelState.AddModelError(string.Empty, errorResponse?.Message ?? "Wrong password !! Try again!!.");
+                    }
+                    catch (JsonException ex)
+                    {
+                        _logger.LogError(ex, "Failed to deserialize error response");
+                        ModelState.AddModelError(string.Empty, "An unexpected error occurred. Please try again.");
+                    }
                     return Page();
                 }
             }

@@ -23,7 +23,10 @@ public class SchoolMedicalDbContext : DbContext
     public DbSet<DrugStorage> DrugStorages => Set<DrugStorage>();
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        optionsBuilder.UseSqlServer(GetConnectionString());
+        if (!optionsBuilder.IsConfigured)
+        {
+            optionsBuilder.UseSqlServer(GetConnectionString());
+        }
         optionsBuilder.EnableSensitiveDataLogging();
     }
     private string GetConnectionString()

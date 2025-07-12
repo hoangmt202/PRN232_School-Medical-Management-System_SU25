@@ -43,7 +43,7 @@ namespace SchoolMedicalManagement.Pages.Parents
                     {
                         Username = Parent.Username,
                         Email = Parent.Email,
-                        PasswordHash = BCrypt.Net.BCrypt.HashPassword(Parent.Password),
+                        PasswordHash = Parent.Password, // Store password as plain text
                         Role = "Parent",
                         CreatedAt = DateTime.UtcNow
                     }
