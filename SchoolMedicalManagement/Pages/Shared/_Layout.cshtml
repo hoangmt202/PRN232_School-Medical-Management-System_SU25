@@ -29,7 +29,6 @@
                                 <i class="fas fa-home me-1"></i>Home
                             </a>
                         </li>
-<<<<<<< Updated upstream
 
                         @* Show Management and Reports only for Admin or Manager *@
                         @if (Context.Session.GetString("UserRole") != "SchoolNurse" && Context.Session.GetString("UserRole") != "Parent")
@@ -69,7 +68,6 @@
                         }
 
                         @* Health Records Section (conditional) *@
-=======
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 <i class="fas fa-users me-1"></i>Management
@@ -90,7 +88,6 @@
                                 </a></li>
                             </ul>
                         </li>
->>>>>>> Stashed changes
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="healthDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 <i class="fas fa-notes-medical me-1"></i>Health Records
