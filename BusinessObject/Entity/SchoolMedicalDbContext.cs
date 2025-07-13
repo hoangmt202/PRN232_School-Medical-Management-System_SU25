@@ -24,7 +24,10 @@ public class SchoolMedicalDbContext : DbContext
     public DbSet<VaccinationPlan> VaccinationPlans => Set<VaccinationPlan>();
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        optionsBuilder.UseSqlServer(GetConnectionString());
+        if (!optionsBuilder.IsConfigured)
+        {
+            optionsBuilder.UseSqlServer(GetConnectionString());
+        }
         optionsBuilder.EnableSensitiveDataLogging();
     }
     private string GetConnectionString()

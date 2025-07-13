@@ -32,7 +32,7 @@ A comprehensive healthcare management system designed for educational institutio
 - **Frontend**: Razor Pages with Bootstrap 5
 - **Database**: SQL Server with Entity Framework Core
 - **Authentication**: Cookie-based authentication
-- **Password Hashing**: BCrypt.Net-Next
+- **Password Storage**: Plain text (for development purposes)
 
 ## Project Structure
 
@@ -133,7 +133,7 @@ PRN232_School-Medical-Management-System_SU25/
 
 ## Security Features
 
-- **Password Hashing**: All passwords are hashed using BCrypt
+- **Password Storage**: Passwords are stored as plain text for development/testing purposes
 - **Role-based Authorization**: Access control based on user roles
 - **Session Management**: Secure session handling with timeout
 - **Input Validation**: Comprehensive form validation
