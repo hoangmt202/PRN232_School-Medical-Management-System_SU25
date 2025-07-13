@@ -8,20 +8,13 @@ using System.Threading.Tasks;
 
 namespace BusinessObject.Entity
 {
-    [Table("vaccination_notices")]
     public class VaccinationNotice
     {
-        [Key]
-        [Column("id")]
         public int Id { get; set; }
-        [Column("student_id")]
         public int StudentId { get; set; }
         public int VaccinationPlanId { get; set; }
-        [Column("date_sent")]
         public DateTime DateSent { get; set; }
-        [Column("response")]
         public string Response { get; set; } = null!;
-        [Column("follow_up_date")]
         public DateTime? FollowUpDate { get; set; }
 
         public Student Student { get; set; } = null!;

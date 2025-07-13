@@ -10,18 +10,12 @@ namespace BusinessObject.Entity
     public class Vaccination
     {
         public int Id { get; set; }
-        [Column("student_id")]
         public int StudentId { get; set; }
         public int? VaccinationPlanId { get; set; }
-        [Column("vaccine_name")]
         public string VaccineName { get; set; } = null!;
-        [Column("date_scheduled")]
         public DateTime DateScheduled { get; set; }
-        [Column("date_given")]
         public DateTime? DateGiven { get; set; }
-        [Column("status")]
         public string Status { get; set; } = null!;
-        [Column("result_note")]
         public string? ResultNote { get; set; }
 
         public Student Student { get; set; } = null!;
