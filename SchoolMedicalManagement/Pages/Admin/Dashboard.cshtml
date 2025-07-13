@@ -1,0 +1,218 @@
+﻿@page
+@model SchoolMedicalManagement.Pages.Admin.DashboardModel
+@{
+    ViewData["Title"] = "📊 Admin Dashboard";
+    var incidentTrend = Model.IncidentStats.MonthlyTrends
+        .OrderBy(x => x.Key)
+        .ToDictionary(x => x.Key.ToString("yyyy-MM"), x => x.Value);
+
+    var checkTrend = Model.HealthTrends.ChecksPerMonth
+        .OrderBy(x => x.Key)
+        .ToDictionary(x => x.Key.ToString("yyyy-MM"), x => x.Value);
+}
+<div class="container py-4">
+    <h2 class="mb-4">📊 Admin Health Reports Dashboard</h2>
+
+    <!-- First Row: Immunization + Incident Charts -->
+    <div class="row g-4 mb-4">
+        <!-- Immunization -->
+        <div class="col-lg-4">
+            <div class="card text-white bg-info shadow-sm h-100">
+                <div class="card-header">💉 Immunization</div>
+                <div class="card-body">
+                    <canvas id="immunizationChart" height="200"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Incident Types -->
+        <div class="col-lg-4">
+            <div class="card border-danger shadow-sm h-100">
+                <div class="card-header bg-danger text-white">
+                    <i class="fas fa-bolt me-2"></i> Incident Types
+                </div>
+                <div class="card-body">
+                    <canvas id="incidentTypeChart" height="200"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Incident Trends -->
+        <div class="col-lg-4">
+            <div class="card border-warning shadow-sm h-100">
+                <div class="card-header bg-warning text-dark">
+                    <i class="fas fa-chart-line me-2"></i> Incident Trends
+                </div>
+                <div class="card-body">
+                    <canvas id="incidentTrendChart" height="200"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Second Row: Health Check Charts -->
+    <div class="row g-4 mb-4">
+        <!-- Health Check Types -->
+        <div class="col-lg-6">
+            <div class="card border-success shadow-sm h-100">
+                <div class="card-header bg-success text-white">
+                    <i class="fas fa-stethoscope me-2"></i> Health Check Types
+                </div>
+                <div class="card-body">
+                    <canvas id="checkTypeChart" height="200"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Health Checks Per Month -->
+        <div class="col-lg-6">
+            <div class="card border-info shadow-sm h-100">
+                <div class="card-header bg-info text-white">
+                    <i class="fas fa-calendar-alt me-2"></i> Health Checks per Month
+                </div>
+                <div class="card-body">
+                    <canvas id="checkTrendChart" height="200"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Third Row: Parental Response + Drug Dosage -->
+    <div class="row g-4">
+        <!-- Parental Response -->
+        <div class="col-lg-6">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-warning text-dark">
+                    👨‍👩‍👧 Parental Responses
+                </div>
+                <div class="card-body">
+                    <canvas id="parentResponseChart" height="200"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Drug Dosage -->
+        <div class="col-lg-6">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-success text-white">
+                    💊 Drug Dosage Forms
+                </div>
+                <div class="card-body">
+                    <canvas id="drugFormChart" height="200"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Immunization Pie
+            const immunizationChart = new Chart(document.getElementById('immunizationChart'), {
+                type: 'pie',
+                data: {
+                    labels: ['Vaccinated', 'Unvaccinated'],
+                    datasets: [{
+                        data: [@Model.Immunization.VaccinatedStudents, @Model.Immunization.TotalStudents - @Model.Immunization.VaccinatedStudents],
+                        backgroundColor: ['#28a745', '#ffc107']
+                    }]
+                }
+            });
+
+            // Parental Response Doughnut
+            const parentResponseChart = new Chart(document.getElementById('parentResponseChart'), {
+                type: 'doughnut',
+                data: {
+                    labels: ['Accepted', 'Rejected', 'No Response'],
+                    datasets: [{
+                        data: [
+        @Model.ParentalResponse.Accepted,
+        @Model.ParentalResponse.Rejected,
+        @Model.ParentalResponse.NoResponse
+                            ],
+                        backgroundColor: ['#007bff', '#dc3545', '#6c757d']
+                    }]
+                }
+            });
+
+            // Drug Form Bar Chart
+            const formLabels = @Html.Raw(Json.Serialize(Model.Inventory.DosageFormSummary.Keys));
+            const formCounts = @Html.Raw(Json.Serialize(Model.Inventory.DosageFormSummary.Values));
+
+            const drugFormChart = new Chart(document.getElementById('drugFormChart'), {
+                type: 'bar',
+                data: {
+                    labels: formLabels,
+                    datasets: [{
+                        label: 'Items',
+                        data: formCounts,
+                        backgroundColor: '#17a2b8'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: { display: false }
+                    }
+                }
+            });
+        });      
+    </script>
+    <script>
+        // Incident Type Chart
+        new Chart(document.getElementById('incidentTypeChart'), {
+            type: 'pie',
+            data: {
+                labels: @Html.Raw(Json.Serialize(Model.IncidentStats.TypeCounts.Keys)),
+                datasets: [{
+                    data: @Html.Raw(Json.Serialize(Model.IncidentStats.TypeCounts.Values)),
+                    backgroundColor: ['#e74c3c', '#f39c12', '#8e44ad', '#3498db']
+                }]
+            }
+        });
+
+        // Incident Trend Line
+        new Chart(document.getElementById('incidentTrendChart'), {
+            type: 'line',
+            data: {
+                labels: @Html.Raw(Json.Serialize(incidentTrend.Keys)),
+                datasets: [{
+                    label: 'Incidents per Month',
+                    data: @Html.Raw(Json.Serialize(incidentTrend.Values)),
+                    borderColor: '#e67e22',
+                    fill: false,
+                    tension: 0.3
+                }]
+            }
+        });
+
+        // Health Check Type Chart
+        new Chart(document.getElementById('checkTypeChart'), {
+            type: 'bar',
+            data: {
+                labels: @Html.Raw(Json.Serialize(Model.HealthTrends.CheckTypeCounts.Keys)),
+                datasets: [{
+                    label: 'Health Checks',
+                    data: @Html.Raw(Json.Serialize(Model.HealthTrends.CheckTypeCounts.Values)),
+                    backgroundColor: '#2ecc71'
+                }]
+            }
+        });
+
+        // Health Check Trend
+        new Chart(document.getElementById('checkTrendChart'), {
+            type: 'line',
+            data: {
+                labels: @Html.Raw(Json.Serialize(checkTrend.Keys)),
+                datasets: [{
+                    label: 'Checks per Month',
+                    data: @Html.Raw(Json.Serialize(checkTrend.Values)),
+                    borderColor: '#1abc9c',
+                    fill: false,
+                    tension: 0.3
+                }]
+            }
+        });
+    </script>
+}

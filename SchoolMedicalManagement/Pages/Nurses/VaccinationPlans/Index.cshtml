@@ -1,0 +1,29 @@
+﻿@page
+@model SchoolMedicalManagement.Pages.Nurses.VaccinationPlans.IndexModel
+@{
+}
+<h2 class="mb-4">🗓 Assigned Vaccination Plans</h2>
+
+@if (!Model.Plans.Any())
+{
+    <p>No vaccination plans assigned.</p>
+}
+else
+{
+    <ul class="list-group">
+        @foreach (var plan in Model.Plans)
+        {
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                <div>
+                    <strong>@plan.VaccineName</strong><br />
+                    <small>@plan.ScheduledDate.ToString("yyyy-MM-dd")</small> | @plan.TargetGroup
+                </div>
+                <a class="btn btn-primary btn-sm"
+                   asp-page="/Nurses/VaccinationPlans/StudentList"
+                   asp-route-planId="@plan.Id">
+                    📋 View Students
+                </a>
+            </li>
+        }
+    </ul>
+}

@@ -93,8 +93,11 @@ body {
 
 /* Navigation */
 .navbar {
-  backdrop-filter: blur(10px);
-  background-color: rgba(13, 110, 253, 0.95) !important;
+    z-index: 1030; /* Bootstrap default navbar z-index */
+    position: sticky;
+    top: 0;
+    backdrop-filter: blur(10px);
+    background-color: rgba(13, 110, 253, 0.95) !important;
 }
 
 .navbar-brand {
@@ -112,9 +115,10 @@ body {
 }
 
 .dropdown-menu {
-  border: none;
-  border-radius: 12px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    z-index: 1050;
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
 }
 
 .dropdown-item {
@@ -199,7 +203,11 @@ body {
 
 /* Footer */
 .footer {
-  background: linear-gradient(135deg, var(--dark-color) 0%, #343a40 100%);
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
+    font-size: 0.85rem;
+    margin-top: 2rem;
+    background: linear-gradient(135deg, var(--dark-color) 0%, #343a40 100%);
 }
 
 .footer a:hover {

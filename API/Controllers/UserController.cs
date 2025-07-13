@@ -1,5 +1,6 @@
 ﻿using BusinessLogic.DTOs;
 using BusinessLogic.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
@@ -55,6 +56,59 @@ namespace API.Controllers
                 Token = token,
                 Id = Id,
             });
+        }
+        [HttpPost("register")]
+        public async Task<IActionResult> Register([FromBody] RegisterRequestDto dto)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+                var result = await _userService.RegisterAsync(dto);
+
+            if (!result.Success)
+                return BadRequest(new { message = result.Message });
+
+            return Ok(new { message = result.Message });
+        }
+        [Authorize]
+        [HttpGet("me")]
+        public async Task<IActionResult> GetProfile()
+        {
+            var userIdStr = User.FindFirst("Id")?.Value;
+            if (!int.TryParse(userIdStr, out var userId))
+                return Unauthorized();
+
+            var profile = await _userService.GetProfileByUserIdAsync(userId);
+            if (profile == null)
+                return NotFound();
+
+            return Ok(profile);
+        }
+        [Authorize]
+        [HttpPut("me")]
+        public async Task<IActionResult> UpdateProfile([FromBody] UserProfileDto dto)
+        {
+            if (!int.TryParse(User.FindFirst("Id")?.Value, out int userId))
+                return Unauthorized("User ID not found in token.");
+
+            var result = await _userService.UpdateProfileAsync(userId, dto);
+            if (!result.Success)
+                return BadRequest(new { message = result.Message });
+
+            return Ok(new { message = result.Message });
+        }
+        [Authorize]
+        [HttpPost("change-password")]
+        public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordDto dto)
+        {
+            if (!int.TryParse(User.FindFirst("Id")?.Value, out int userId))
+                return Unauthorized("User ID not found in token.");
+
+            var result = await _userService.ChangePasswordAsync(userId, dto);
+            if (!result.Success)
+                return BadRequest(new { message = result.Message });
+
+            return Ok(new { message = result.Message });
         }
     }
 }

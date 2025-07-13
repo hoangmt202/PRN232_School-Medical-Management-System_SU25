@@ -12,10 +12,12 @@ namespace API.Controllers
     public class StudentController : ControllerBase
     {
         private readonly IStudentService _studentService;
+        private readonly IParentService _parentService;
 
-        public StudentController(IStudentService studentService)
+        public StudentController(IStudentService studentService, IParentService parentService)
         {
             _studentService = studentService;
+            _parentService = parentService;
         }
 
         [HttpGet]
@@ -100,6 +102,22 @@ namespace API.Controllers
             {
                 return StatusCode(500, new { message = "Internal server error", error = ex.Message });
             }
+        }
+        [HttpGet("by-parent")]
+        public async Task<IActionResult> GetByParentUserId()
+        {
+            var userIdClaim = User.FindFirst("Id");
+            if (userIdClaim == null || !int.TryParse(userIdClaim.Value, out int userId))
+            {
+                return Unauthorized("Invalid or missing user ID.");
+            }
+            var students = await _studentService.GetStudentsByParentUserIdAsync(userId);
+            if (!students.Any())
+            {
+                return NotFound("No students found for this parent user.");
+            }
+
+            return Ok(students);
         }
     }
 } 

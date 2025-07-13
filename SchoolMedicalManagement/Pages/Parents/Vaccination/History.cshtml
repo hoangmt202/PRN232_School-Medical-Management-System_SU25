@@ -1,0 +1,83 @@
+﻿@page
+@model SchoolMedicalManagement.Pages.Parents.Vaccination.HistoryModel
+@{
+    ViewData["Title"] = "Vaccination History";
+}
+
+<div class="container mt-4">
+    <h3>🗂 Vaccination History</h3>
+
+    @if (!Model.Records.Any())
+    {
+        <div class="alert alert-warning">No vaccination history found.</div>
+    }
+    else
+    {
+        <table class="table table-bordered table-hover mt-3">
+            <thead class="table-light">
+                <tr>
+                    <th>Student</th>
+                    <th>Vaccine Name</th>
+                    <th>Date Given</th>
+                    <th>Status</th>
+                    <th>Result Note</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var record in Model.Records)
+                {
+                    <tr>
+                        <td>@record.StudentName</td>
+                        <td>@record.VaccineName</td>
+                        <td>@(record.DateGiven?.ToString("yyyy-MM-dd") ?? "—")</td>
+                        <td>
+                            @if (record.Status == "Given")
+                            {
+                                <span class="badge bg-success">Given</span>
+                            }
+                            else if (record.Status == "Missed")
+                            {
+                                <span class="badge bg-danger">Missed</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-secondary">@record.Status</span>
+                            }
+                        </td>
+                        <td>
+                            @if (record.Status == "Given")
+                            {
+                                <div class="mt-2">
+                                    <label>Post-vaccination note:</label>
+                                    <textarea class="form-control" id="note-@record.Id">@record.ResultNote</textarea>
+                                    <button class="btn btn-sm btn-outline-primary mt-1" onclick="submitNote(@record.Id)">Save Note</button>
+                                </div>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</div>
+@section Scripts {
+    <script>
+        async function submitNote(vaccinationId) {
+            const note = document.getElementById(`note-${vaccinationId}`).value;
+
+            const res = await fetch('https://localhost:7115/api/vaccination/result-note', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ vaccinationId: vaccinationId, note: note })
+            });
+
+            if (res.ok) {
+                alert("Note saved!");
+            } else {
+                alert("Failed to save note.");
+            }
+        }
+    </script>
+
+}
+
