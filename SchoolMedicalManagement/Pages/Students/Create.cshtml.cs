@@ -18,8 +18,86 @@ namespace SchoolMedicalManagement.Pages.Students
         [BindProperty]
         public StudentDto Student { get; set; }
 
-        public void OnGet()
+        [BindProperty(SupportsGet = true)]
+        public int? UserId { get; set; }
+
+        [BindProperty(SupportsGet = true)]
+        public int? ParentId { get; set; }
+
+        public string ParentName { get; set; }
+
+        public async Task<IActionResult> OnGetAsync()
         {
+            if (UserId.HasValue)
+            {
+                try
+                {
+                    var client = _httpClientFactory.CreateClient();
+                    var response = await client.GetAsync($"http://localhost:5234/api/Parent/user/{UserId.Value}");
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var json = await response.Content.ReadAsStringAsync();
+                        var parent = JsonSerializer.Deserialize<ParentDto>(json, new JsonSerializerOptions
+                        {
+                            PropertyNameCaseInsensitive = true
+                        });
+                        
+                        if (parent != null)
+                        {
+                            ParentName = parent.FullName;
+                            Student = new StudentDto
+                            {
+                                ParentId = parent.Id
+                            };
+                        }
+                    }
+                }
+                catch
+                {
+                    // If we can't fetch parent info, we'll still allow creation with the provided UserId
+                    ModelState.AddModelError(string.Empty, "Failed to fetch parent information. Please try again.");
+                    return Page();
+                }
+            }
+            else if (ParentId.HasValue)
+            {
+                try
+                {
+                    var client = _httpClientFactory.CreateClient();
+                    var response = await client.GetAsync($"http://localhost:5234/api/Parent/{ParentId.Value}");
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var json = await response.Content.ReadAsStringAsync();
+                        var parent = JsonSerializer.Deserialize<ParentDto>(json, new JsonSerializerOptions
+                        {
+                            PropertyNameCaseInsensitive = true
+                        });
+                        
+                        if (parent != null)
+                        {
+                            ParentName = parent.FullName;
+                            Student = new StudentDto
+                            {
+                                ParentId = parent.Id
+                            };
+                        }
+                    }
+                }
+                catch
+                {
+                    // If we can't fetch parent info, we'll still allow creation with the provided ParentId
+                    Student = new StudentDto
+                    {
+                        ParentId = ParentId.Value
+                    };
+                }
+            }
+            else
+            {
+                Student = new StudentDto();
+            }
+
+            return Page();
         }
 
         public async Task<IActionResult> OnPostAsync()
@@ -48,5 +126,12 @@ namespace SchoolMedicalManagement.Pages.Students
                 return Page();
             }
         }
+    }
+
+    public class ParentDto
+    {
+        public int Id { get; set; }
+        public string FullName { get; set; }
+        public int UserId { get; set; }
     }
 } 

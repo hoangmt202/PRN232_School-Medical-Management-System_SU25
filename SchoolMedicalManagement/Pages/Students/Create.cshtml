@@ -3,36 +3,103 @@
 @{
     ViewData["Title"] = "Create Student";
 }
-<h1>Create Student</h1>
-<form method="post">
-    <div class="form-group">
-        <label asp-for="Student.FullName" class="control-label"></label>
-        <input asp-for="Student.FullName" class="form-control" />
-        <span asp-validation-for="Student.FullName" class="text-danger"></span>
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h3 class="card-title mb-0">
+                        <i class="fas fa-user-plus me-2"></i>Add New Student
+                    </h3>
+                </div>
+                <div class="card-body">
+                    @if (!string.IsNullOrEmpty(Model.ParentName))
+                    {
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle me-2"></i>
+                            <strong>Adding student for parent account:</strong> @Model.ParentName
+                        </div>
+                    }
+
+                    <form method="post">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label asp-for="Student.FullName" class="form-label">
+                                        <i class="fas fa-user me-1"></i>Full Name
+                                    </label>
+                                    <input asp-for="Student.FullName" class="form-control" placeholder="Enter student's full name" />
+                                    <span asp-validation-for="Student.FullName" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label asp-for="Student.DateOfBirth" class="form-label">
+                                        <i class="fas fa-calendar me-1"></i>Date of Birth
+                                    </label>
+                                    <input asp-for="Student.DateOfBirth" class="form-control" type="date" />
+                                    <span asp-validation-for="Student.DateOfBirth" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label asp-for="Student.Gender" class="form-label">
+                                        <i class="fas fa-venus-mars me-1"></i>Gender
+                                    </label>
+                                    <select asp-for="Student.Gender" class="form-select">
+                                        <option value="">Select Gender</option>
+                                        <option value="Male">Male</option>
+                                        <option value="Female">Female</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+                                    <span asp-validation-for="Student.Gender" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label asp-for="Student.Class" class="form-label">
+                                        <i class="fas fa-school me-1"></i>Class
+                                    </label>
+                                    <input asp-for="Student.Class" class="form-control" placeholder="Enter class (e.g., Grade 1A)" />
+                                    <span asp-validation-for="Student.Class" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        @if (string.IsNullOrEmpty(Model.ParentName))
+                        {
+                            <div class="mb-3">
+                                <label asp-for="Student.ParentId" class="form-label">
+                                    <i class="fas fa-users me-1"></i>Parent ID
+                                </label>
+                                <input asp-for="Student.ParentId" class="form-control" placeholder="Enter parent ID" />
+                                <span asp-validation-for="Student.ParentId" class="text-danger"></span>
+                            </div>
+                        }
+                        else
+                        {
+                            <input asp-for="Student.ParentId" type="hidden" />
+                        }
+
+                        <div class="d-flex justify-content-between">
+                            <a asp-page="Index" class="btn btn-secondary">
+                                <i class="fas fa-arrow-left me-1"></i>Back to List
+                            </a>
+                            <button type="submit" class="btn btn-success">
+                                <i class="fas fa-save me-1"></i>Create Student
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
-    <div class="form-group">
-        <label asp-for="Student.DateOfBirth" class="control-label"></label>
-        <input asp-for="Student.DateOfBirth" class="form-control" type="date" />
-        <span asp-validation-for="Student.DateOfBirth" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="Student.Gender" class="control-label"></label>
-        <input asp-for="Student.Gender" class="form-control" />
-        <span asp-validation-for="Student.Gender" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="Student.Class" class="control-label"></label>
-        <input asp-for="Student.Class" class="form-control" />
-        <span asp-validation-for="Student.Class" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="Student.ParentId" class="control-label"></label>
-        <input asp-for="Student.ParentId" class="form-control" />
-        <span asp-validation-for="Student.ParentId" class="text-danger"></span>
-    </div>
-    <button type="submit" class="btn btn-primary">Create</button>
-    <a asp-page="Index" class="btn btn-secondary">Back to List</a>
-</form>
+</div>
+
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 } 

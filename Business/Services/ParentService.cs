@@ -139,7 +139,6 @@ namespace BusinessLogic.Services
                 Address = parent.Address,
                 UserId = parent.UserId,
                 User = parent.User,
-                Students = parent.Students
             };
         }
 
