@@ -28,32 +28,32 @@ namespace API.Controllers
             return Ok(new { message = "API is working", timestamp = DateTime.UtcNow });
         }
 
-        [HttpGet("test-db")]
-        public async Task<IActionResult> TestDatabase()
-        {
-            try
-            {
-                var users = await _userService.GetAllUsers();
-                var userDetails = users.Select(u => new { 
-                    Id = u.Id, 
-                    Username = u.Username, 
-                    Email = u.Email, 
-                    Role = u.Role,
-                    PasswordHash = u.PasswordHash 
-                }).ToList();
+        //[HttpGet("test-db")]
+        //public async Task<IActionResult> TestDatabase()
+        //{
+        //    try
+        //    {
+        //        var users = await _userService.GetAllUsers();
+        //        var userDetails = users.Select(u => new { 
+        //            Id = u.Id, 
+        //            Username = u.Username, 
+        //            Email = u.Email, 
+        //            Role = u.Role,
+        //            PasswordHash = u.PasswordHash 
+        //        }).ToList();
                 
-                return Ok(new { 
-                    message = "Database connection successful", 
-                    userCount = users.Count,
-                    users = userDetails
-                });
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Database test failed");
-                return StatusCode(500, new { message = "Database connection failed", error = ex.Message });
-            }
-        }
+        //        return Ok(new { 
+        //            message = "Database connection successful", 
+        //            userCount = users.Count,
+        //            users = userDetails
+        //        });
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        _logger.LogError(ex, "Database test failed");
+        //        return StatusCode(500, new { message = "Database connection failed", error = ex.Message });
+        //    }
+        //}
 
         [HttpPost("login")]
         public async Task<IActionResult> login([FromBody] LoginRequest loginDTO)
