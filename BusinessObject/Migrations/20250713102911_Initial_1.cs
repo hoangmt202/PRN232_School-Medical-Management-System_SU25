@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace BusinessObject.Migrations
 {
     /// <inheritdoc />
-    public partial class Initial : Migration
+    public partial class Initial_1 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -163,6 +163,29 @@ namespace BusinessObject.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "VaccinationPlan",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    VaccineName = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
+                    ScheduledDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    TargetGroup = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
+                    Notes = table.Column<string>(type: "nvarchar(2000)", maxLength: 2000, nullable: true),
+                    AssignedNurseId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_VaccinationPlan", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_VaccinationPlan_SchoolNurses_AssignedNurseId",
+                        column: x => x.AssignedNurseId,
+                        principalTable: "SchoolNurses",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "HealthChecks",
                 columns: table => new
                 {
@@ -274,7 +297,7 @@ namespace BusinessObject.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     StudentId = table.Column<int>(type: "int", nullable: false),
-                    VaccineName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    VaccinationPlanId = table.Column<int>(type: "int", nullable: false),
                     DateSent = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Response = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     FollowUpDate = table.Column<DateTime>(type: "datetime2", nullable: true)
@@ -288,6 +311,12 @@ namespace BusinessObject.Migrations
                         principalTable: "Students",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_VaccinationNotices_VaccinationPlan_VaccinationPlanId",
+                        column: x => x.VaccinationPlanId,
+                        principalTable: "VaccinationPlan",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -297,6 +326,7 @@ namespace BusinessObject.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     StudentId = table.Column<int>(type: "int", nullable: false),
+                    VaccinationPlanId = table.Column<int>(type: "int", nullable: true),
                     VaccineName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     DateScheduled = table.Column<DateTime>(type: "datetime2", nullable: false),
                     DateGiven = table.Column<DateTime>(type: "datetime2", nullable: true),
@@ -310,6 +340,12 @@ namespace BusinessObject.Migrations
                         name: "FK_Vaccinations_Students_StudentId",
                         column: x => x.StudentId,
                         principalTable: "Students",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Vaccinations_VaccinationPlan_VaccinationPlanId",
+                        column: x => x.VaccinationPlanId,
+                        principalTable: "VaccinationPlan",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -385,9 +421,24 @@ namespace BusinessObject.Migrations
                 column: "StudentId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_VaccinationNotices_VaccinationPlanId",
+                table: "VaccinationNotices",
+                column: "VaccinationPlanId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_VaccinationPlan_AssignedNurseId",
+                table: "VaccinationPlan",
+                column: "AssignedNurseId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Vaccinations_StudentId",
                 table: "Vaccinations",
                 column: "StudentId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Vaccinations_VaccinationPlanId",
+                table: "Vaccinations",
+                column: "VaccinationPlanId");
         }
 
         /// <inheritdoc />
@@ -421,13 +472,16 @@ namespace BusinessObject.Migrations
                 name: "Vaccinations");
 
             migrationBuilder.DropTable(
-                name: "SchoolNurses");
-
-            migrationBuilder.DropTable(
                 name: "Students");
 
             migrationBuilder.DropTable(
+                name: "VaccinationPlan");
+
+            migrationBuilder.DropTable(
                 name: "Parents");
+
+            migrationBuilder.DropTable(
+                name: "SchoolNurses");
 
             migrationBuilder.DropTable(
                 name: "Users");

@@ -48,62 +48,47 @@ namespace BusinessObject.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("id");
+                        .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("DateReceived")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("date_received");
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("DosageForm")
                         .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)")
-                        .HasColumnName("dosage_form");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("ExpirationDate")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("expiration_date");
+                        .HasColumnType("datetime2");
 
                     b.Property<int>("ManagedBy")
-                        .HasColumnType("int")
-                        .HasColumnName("managed_by");
+                        .HasColumnType("int");
 
                     b.Property<string>("Manufacturer")
                         .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)")
-                        .HasColumnName("manufacturer");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("MedicationName")
                         .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)")
-                        .HasColumnName("medication_name");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("Quantity")
-                        .HasColumnType("int")
-                        .HasColumnName("quantity");
+                        .HasColumnType("int");
 
                     b.Property<string>("StorageLocation")
                         .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)")
-                        .HasColumnName("storage_location");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Strength")
                         .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)")
-                        .HasColumnName("strength");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("ManagedBy");
 
-                    b.ToTable("drug_storage");
+                    b.ToTable("DrugStorages");
                 });
 
             modelBuilder.Entity("BusinessObject.Entity.HealthCheck", b =>
@@ -212,31 +197,26 @@ namespace BusinessObject.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Allergies")
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("allergies");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ChronicDiseases")
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("chronic_diseases");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PhysicalCondition")
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("physical_condition");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("StudentId")
-                        .HasColumnType("int")
-                        .HasColumnName("student_id");
+                        .HasColumnType("int");
 
                     b.Property<string>("TreatmentHistory")
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("treatment_history");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("StudentId")
                         .IsUnique();
 
-                    b.ToTable("medical_records", (string)null);
+                    b.ToTable("MedicalRecords");
                 });
 
             modelBuilder.Entity("BusinessObject.Entity.Medication", b =>
@@ -284,22 +264,18 @@ namespace BusinessObject.Migrations
 
                     b.Property<string>("Address")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("address");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("FullName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("full_name");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PhoneNumber")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("phone_number");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("UserId")
-                        .HasColumnType("int")
-                        .HasColumnName("user_id");
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -313,31 +289,27 @@ namespace BusinessObject.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("id");
+                        .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("FullName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("full_name");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PhoneNumber")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("phone_number");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("UserId")
-                        .HasColumnType("int")
-                        .HasColumnName("user_id");
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("UserId")
                         .IsUnique();
 
-                    b.ToTable("school_nurses");
+                    b.ToTable("SchoolNurses");
                 });
 
             modelBuilder.Entity("BusinessObject.Entity.Student", b =>
@@ -350,26 +322,21 @@ namespace BusinessObject.Migrations
 
                     b.Property<string>("Class")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("class");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("DateOfBirth")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("date_of_birth");
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("FullName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("full_name");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Gender")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("gender");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("ParentId")
-                        .HasColumnType("int")
-                        .HasColumnName("parent_id");
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -387,10 +354,7 @@ namespace BusinessObject.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("CreatedAt")
-                        .IsConcurrencyToken()
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("datetime2")
-                        .HasColumnName("created_at");
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -398,8 +362,7 @@ namespace BusinessObject.Migrations
 
                     b.Property<string>("PasswordHash")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("password_hash");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Role")
                         .IsRequired()
@@ -438,6 +401,9 @@ namespace BusinessObject.Migrations
                     b.Property<int>("StudentId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("VaccinationPlanId")
+                        .HasColumnType("int");
+
                     b.Property<string>("VaccineName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -445,6 +411,8 @@ namespace BusinessObject.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("StudentId");
+
+                    b.HasIndex("VaccinationPlanId");
 
                     b.ToTable("Vaccinations");
                 });
@@ -470,15 +438,51 @@ namespace BusinessObject.Migrations
                     b.Property<int>("StudentId")
                         .HasColumnType("int");
 
-                    b.Property<string>("VaccineName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("VaccinationPlanId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("StudentId");
 
+                    b.HasIndex("VaccinationPlanId");
+
                     b.ToTable("VaccinationNotices");
+                });
+
+            modelBuilder.Entity("BusinessObject.Entity.VaccinationPlan", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("AssignedNurseId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Notes")
+                        .HasMaxLength(2000)
+                        .HasColumnType("nvarchar(2000)");
+
+                    b.Property<DateTime>("ScheduledDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("TargetGroup")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<string>("VaccineName")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AssignedNurseId");
+
+                    b.ToTable("VaccinationPlan", (string)null);
                 });
 
             modelBuilder.Entity("BusinessObject.Entity.Admin", b =>
@@ -615,6 +619,13 @@ namespace BusinessObject.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("BusinessObject.Entity.VaccinationPlan", "Plan")
+                        .WithMany("Vaccinations")
+                        .HasForeignKey("VaccinationPlanId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.Navigation("Plan");
+
                     b.Navigation("Student");
                 });
 
@@ -626,7 +637,26 @@ namespace BusinessObject.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("BusinessObject.Entity.VaccinationPlan", "Plan")
+                        .WithMany("Notices")
+                        .HasForeignKey("VaccinationPlanId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Plan");
+
                     b.Navigation("Student");
+                });
+
+            modelBuilder.Entity("BusinessObject.Entity.VaccinationPlan", b =>
+                {
+                    b.HasOne("BusinessObject.Entity.SchoolNurse", "Nurse")
+                        .WithMany()
+                        .HasForeignKey("AssignedNurseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Nurse");
                 });
 
             modelBuilder.Entity("BusinessObject.Entity.Parent", b =>
@@ -667,6 +697,13 @@ namespace BusinessObject.Migrations
                     b.Navigation("Parent");
 
                     b.Navigation("SchoolNurse");
+                });
+
+            modelBuilder.Entity("BusinessObject.Entity.VaccinationPlan", b =>
+                {
+                    b.Navigation("Notices");
+
+                    b.Navigation("Vaccinations");
                 });
 #pragma warning restore 612, 618
         }

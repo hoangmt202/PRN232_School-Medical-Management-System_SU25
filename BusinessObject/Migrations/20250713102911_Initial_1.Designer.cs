@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BusinessObject.Migrations
 {
     [DbContext(typeof(SchoolMedicalDbContext))]
-    [Migration("20250529103358_Initial")]
-    partial class Initial
+    [Migration("20250713102911_Initial_1")]
+    partial class Initial_1
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -404,6 +404,9 @@ namespace BusinessObject.Migrations
                     b.Property<int>("StudentId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("VaccinationPlanId")
+                        .HasColumnType("int");
+
                     b.Property<string>("VaccineName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -411,6 +414,8 @@ namespace BusinessObject.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("StudentId");
+
+                    b.HasIndex("VaccinationPlanId");
 
                     b.ToTable("Vaccinations");
                 });
@@ -436,15 +441,51 @@ namespace BusinessObject.Migrations
                     b.Property<int>("StudentId")
                         .HasColumnType("int");
 
-                    b.Property<string>("VaccineName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("VaccinationPlanId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("StudentId");
 
+                    b.HasIndex("VaccinationPlanId");
+
                     b.ToTable("VaccinationNotices");
+                });
+
+            modelBuilder.Entity("BusinessObject.Entity.VaccinationPlan", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("AssignedNurseId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Notes")
+                        .HasMaxLength(2000)
+                        .HasColumnType("nvarchar(2000)");
+
+                    b.Property<DateTime>("ScheduledDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("TargetGroup")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<string>("VaccineName")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AssignedNurseId");
+
+                    b.ToTable("VaccinationPlan", (string)null);
                 });
 
             modelBuilder.Entity("BusinessObject.Entity.Admin", b =>
@@ -581,6 +622,13 @@ namespace BusinessObject.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("BusinessObject.Entity.VaccinationPlan", "Plan")
+                        .WithMany("Vaccinations")
+                        .HasForeignKey("VaccinationPlanId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.Navigation("Plan");
+
                     b.Navigation("Student");
                 });
 
@@ -592,7 +640,26 @@ namespace BusinessObject.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("BusinessObject.Entity.VaccinationPlan", "Plan")
+                        .WithMany("Notices")
+                        .HasForeignKey("VaccinationPlanId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Plan");
+
                     b.Navigation("Student");
+                });
+
+            modelBuilder.Entity("BusinessObject.Entity.VaccinationPlan", b =>
+                {
+                    b.HasOne("BusinessObject.Entity.SchoolNurse", "Nurse")
+                        .WithMany()
+                        .HasForeignKey("AssignedNurseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Nurse");
                 });
 
             modelBuilder.Entity("BusinessObject.Entity.Parent", b =>
@@ -633,6 +700,13 @@ namespace BusinessObject.Migrations
                     b.Navigation("Parent");
 
                     b.Navigation("SchoolNurse");
+                });
+
+            modelBuilder.Entity("BusinessObject.Entity.VaccinationPlan", b =>
+                {
+                    b.Navigation("Notices");
+
+                    b.Navigation("Vaccinations");
                 });
 #pragma warning restore 612, 618
         }
