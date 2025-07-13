@@ -1,3 +1,4 @@
+using BusinessLogic.Mapper;
 using BusinessLogic.Services;
 using BusinessObject.Entity;
 using DataAccess;
@@ -22,6 +23,7 @@ builder.Services.AddCors(options =>
         policy.AllowAnyOrigin()
               .AllowAnyMethod()
               .AllowAnyHeader();
+
     });
 });
 
@@ -42,16 +44,22 @@ builder.Services.AddControllers()
 IConfiguration configuration = new ConfigurationBuilder()
             .SetBasePath(Directory.GetCurrentDirectory())
             .AddJsonFile("appsettings.json", true, true).Build();
-
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
+builder.Services.AddScoped<IGenericRepository<Student>, GenericRepository<Student>>();
+builder.Services.AddScoped<IGenericRepository<Parent>, GenericRepository<Parent>>();
 builder.Services.AddScoped<IUnitOfWorks, UnitOfWork>();
 builder.Services.AddScoped<IGenericRepository<Student>, GenericRepository<Student>>();
 builder.Services.AddScoped<IGenericRepository<Parent>,  GenericRepository<Parent>>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IParentService, ParentService>();
+builder.Services.AddScoped<ISchoolNurseService, SchoolNurseService>();
+builder.Services.AddScoped<IInventoryService, InventoryService>();
 builder.Services.AddScoped<IStudentService, StudentService>();
+builder.Services.AddScoped<IVaccinationParentService, VaccinationParentService>();
+builder.Services.AddScoped<IReportService, ReportService>();
 builder.Services.AddDbContext<SchoolMedicalDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
 );
@@ -122,11 +130,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
+app.UseCors("AllowAll");
 app.UseHttpsRedirection();
 
-// Use CORS
-app.UseCors("AllowAll");
 
 app.UseAuthentication();
 app.UseAuthorization();

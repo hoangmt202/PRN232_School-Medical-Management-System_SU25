@@ -8,17 +8,11 @@ using System.Threading.Tasks;
 
 namespace BusinessObject.Entity
 {
-    [Table("school_nurses")]
     public class SchoolNurse
     {
-        [Key]
-        [Column("id")]
         public int Id { get; set; }
-        [Column("full_name")]
         public string FullName { get; set; } = null!;
-        [Column("phone_number")]
         public string PhoneNumber { get; set; } = null!;
-        [Column("user_id")]
         public int UserId { get; set; }
 
         public User User { get; set; } = null!;

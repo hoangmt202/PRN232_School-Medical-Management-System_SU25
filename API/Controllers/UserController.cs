@@ -1,5 +1,6 @@
 ﻿using BusinessLogic.DTOs;
 using BusinessLogic.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
@@ -27,32 +28,32 @@ namespace API.Controllers
             return Ok(new { message = "API is working", timestamp = DateTime.UtcNow });
         }
 
-        [HttpGet("test-db")]
-        public async Task<IActionResult> TestDatabase()
-        {
-            try
-            {
-                var users = await _userService.GetAllUsers();
-                var userDetails = users.Select(u => new { 
-                    Id = u.Id, 
-                    Username = u.Username, 
-                    Email = u.Email, 
-                    Role = u.Role,
-                    PasswordHash = u.PasswordHash 
-                }).ToList();
+        //[HttpGet("test-db")]
+        //public async Task<IActionResult> TestDatabase()
+        //{
+        //    try
+        //    {
+        //        var users = await _userService.GetAllUsers();
+        //        var userDetails = users.Select(u => new { 
+        //            Id = u.Id, 
+        //            Username = u.Username, 
+        //            Email = u.Email, 
+        //            Role = u.Role,
+        //            PasswordHash = u.PasswordHash 
+        //        }).ToList();
                 
-                return Ok(new { 
-                    message = "Database connection successful", 
-                    userCount = users.Count,
-                    users = userDetails
-                });
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Database test failed");
-                return StatusCode(500, new { message = "Database connection failed", error = ex.Message });
-            }
-        }
+        //        return Ok(new { 
+        //            message = "Database connection successful", 
+        //            userCount = users.Count,
+        //            users = userDetails
+        //        });
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        _logger.LogError(ex, "Database test failed");
+        //        return StatusCode(500, new { message = "Database connection failed", error = ex.Message });
+        //    }
+        //}
 
         [HttpPost("login")]
         public async Task<IActionResult> login([FromBody] LoginRequest loginDTO)
@@ -102,6 +103,59 @@ namespace API.Controllers
                 _logger.LogError(ex, $"Error during login for email: {loginDTO.Email}");
                 return StatusCode(500, new { message = "Internal server error", error = ex.Message });
             }
+        }
+        [HttpPost("register")]
+        public async Task<IActionResult> Register([FromBody] RegisterRequestDto dto)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+                var result = await _userService.RegisterAsync(dto);
+
+            if (!result.Success)
+                return BadRequest(new { message = result.Message });
+
+            return Ok(new { message = result.Message });
+        }
+        [Authorize]
+        [HttpGet("me")]
+        public async Task<IActionResult> GetProfile()
+        {
+            var userIdStr = User.FindFirst("Id")?.Value;
+            if (!int.TryParse(userIdStr, out var userId))
+                return Unauthorized();
+
+            var profile = await _userService.GetProfileByUserIdAsync(userId);
+            if (profile == null)
+                return NotFound();
+
+            return Ok(profile);
+        }
+        [Authorize]
+        [HttpPut("me")]
+        public async Task<IActionResult> UpdateProfile([FromBody] UserProfileDto dto)
+        {
+            if (!int.TryParse(User.FindFirst("Id")?.Value, out int userId))
+                return Unauthorized("User ID not found in token.");
+
+            var result = await _userService.UpdateProfileAsync(userId, dto);
+            if (!result.Success)
+                return BadRequest(new { message = result.Message });
+
+            return Ok(new { message = result.Message });
+        }
+        [Authorize]
+        [HttpPost("change-password")]
+        public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordDto dto)
+        {
+            if (!int.TryParse(User.FindFirst("Id")?.Value, out int userId))
+                return Unauthorized("User ID not found in token.");
+
+            var result = await _userService.ChangePasswordAsync(userId, dto);
+            if (!result.Success)
+                return BadRequest(new { message = result.Message });
+
+            return Ok(new { message = result.Message });
         }
     }
 }

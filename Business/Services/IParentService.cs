@@ -16,6 +16,8 @@ namespace BusinessLogic.Services
         Task<ParentResponseDTO> CreateParentWithUser(ParentRequestDTO parentDTO);
         Task<ParentResponseDTO> Update(int id, ParentRequestDTO parentDTO);
         Task<ParentResponseDTO> Delete(int id);
-        
+        Task<ParentDto?> GetParentByUserIdAsync(int userId);
+
+
     }
 }

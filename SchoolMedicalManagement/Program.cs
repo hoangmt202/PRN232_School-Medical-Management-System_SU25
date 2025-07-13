@@ -9,7 +9,12 @@ builder.Services.AddRazorPages();
 builder.Services.AddHttpClient();
 builder.Services.AddSession();
 builder.Services.AddSignalR();
+var apiBase = builder.Configuration["ApiBaseUrls:SchoolMedicalApi"];
 
+builder.Services.AddHttpClient("API", client =>
+{
+    client.BaseAddress = new Uri(apiBase!);
+});
 // Add Authentication
 builder.Services.AddAuthentication("Cookies")
     .AddCookie(options =>
@@ -57,7 +62,7 @@ app.UseAuthorization();
 app.MapRazorPages();
 app.MapGet("/", context =>
 {
-    context.Response.Redirect("/admin/Inventory");
+    context.Response.Redirect("/auth/login");
     return Task.CompletedTask;
 });
 app.Run();

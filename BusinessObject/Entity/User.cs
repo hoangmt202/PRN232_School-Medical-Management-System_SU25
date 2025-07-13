@@ -15,7 +15,7 @@ namespace BusinessObject.Entity
         public string PasswordHash { get; set; } = null!;
         public string Email { get; set; } = null!;
         public string Role { get; set; } = null!;
-        public DateTime CreatedAt { get; set; }
+        public DateTime CreatedAt { get; set; } = DateTime.Now;
 
         public Parent? Parent { get; set; }
         public SchoolNurse? SchoolNurse { get; set; }

@@ -1,0 +1,74 @@
+﻿@page
+@model SchoolMedicalManagement.Pages.Auth.EditProfileModel
+@{
+    ViewData["Title"] = "My Profile";
+}
+
+<h2 class="mb-4">👤 Profile</h2>
+
+<div class="row">
+    <div class="col-md-6">
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                @TempData["Success"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                @TempData["Error"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+        <form method="post" asp-page-handler="EditProfile">
+            <div class="mb-3">
+                           
+                <label class="form-label">Username</label>
+                <input class="form-control" value="@Model.Profile.Username" readonly />
+                <input asp-for="Profile.Username" type="hidden" />
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Email</label>
+                <input class="form-control" value="@Model.Profile.Email" readonly />
+                <input asp-for="Profile.Email" type="hidden" />
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Full Name</label>
+                <input asp-for="Profile.FullName" class="form-control" />
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Phone Number</label>
+                <input asp-for="Profile.PhoneNumber" class="form-control" />
+            </div>
+            @if (Model.Profile.RoleName == "Parent")
+            {
+                <div class="mb-3">
+                    <label class="form-label">Address</label>
+                    <input asp-for="Profile.Address" class="form-control" />
+                </div>
+            }
+            <button type="submit" class="btn btn-primary">💾 Save Changes</button>
+        </form>
+    </div>
+
+    <div class="col-md-6">
+        <form method="post" asp-page-handler="ChangePassword">
+            <h5>🔒 Change Password</h5>
+            <div class="mb-3">
+                <label class="form-label">Current Password</label>
+                <input asp-for="Profile.CurrentPassword" type="password" class="form-control" />
+            </div>
+            <div class="mb-3">
+                <label class="form-label">New Password</label>
+                <input asp-for="Profile.NewPassword" type="password" class="form-control" />
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Confirm Password</label>
+                <input asp-for="Profile.ConfirmPassword" type="password" class="form-control" />
+            </div>
+            <button type="submit" class="btn btn-warning">🔐 Update Password</button>
+        </form>
+    </div>
+</div>

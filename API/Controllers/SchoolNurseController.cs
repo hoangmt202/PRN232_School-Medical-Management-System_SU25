@@ -1,4 +1,5 @@
 using BusinessLogic.DTOs;
+using BusinessLogic.DTOs.SchoolNurse;
 using BusinessLogic.Services;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -31,7 +32,19 @@ namespace API.Controllers
                 return StatusCode(500, new { message = "Internal server error", error = ex.Message });
             }
         }
-
+        [HttpGet("all")]
+        public async Task<ActionResult<List<SchoolNurseDto>>> GetAllNurse()
+        {
+            try
+            {
+                var nurses = await _schoolNurseService.GetAllSchoolNursesAsync();
+                return Ok(nurses);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Internal server error", error = ex.Message });
+            }
+        }
         [HttpGet("{id}")]
         public async Task<ActionResult<SchoolNurseResponseDTO>> GetById(int id)
         {
@@ -99,6 +112,28 @@ namespace API.Controllers
             catch (Exception ex)
             {
                 return StatusCode(500, new { message = "Internal server error", error = ex.Message });
+            }
+        }
+        [HttpGet("me")]
+        public async Task<IActionResult> GetMyProfile()
+        {
+            try
+            {
+                var userIdClaim = User.FindFirst("Id");
+                if (userIdClaim == null || !int.TryParse(userIdClaim.Value, out int userId))
+                {
+                    return Unauthorized("Invalid or missing user ID.");
+                }
+
+                var nurse = await _schoolNurseService.GetSchoolNurseByUserIdAsync(userId);
+                if (nurse == null)
+                    return NotFound("Nurse profile not found for this user.");
+
+                return Ok(nurse);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex);
             }
         }
     }

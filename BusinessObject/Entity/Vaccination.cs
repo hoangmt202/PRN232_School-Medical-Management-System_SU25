@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,6 +11,7 @@ namespace BusinessObject.Entity
     {
         public int Id { get; set; }
         public int StudentId { get; set; }
+        public int? VaccinationPlanId { get; set; }
         public string VaccineName { get; set; } = null!;
         public DateTime DateScheduled { get; set; }
         public DateTime? DateGiven { get; set; }
@@ -17,5 +19,6 @@ namespace BusinessObject.Entity
         public string? ResultNote { get; set; }
 
         public Student Student { get; set; } = null!;
+        public VaccinationPlan Plan { get; set; } = null!;
     }
 }

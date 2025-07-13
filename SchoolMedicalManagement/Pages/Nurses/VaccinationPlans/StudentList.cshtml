@@ -1,0 +1,143 @@
+﻿@page
+@model SchoolMedicalManagement.Pages.Nurses.VaccinationPlans.StudentListModel
+@{
+    ViewData["Title"] = "Vaccination Plan - Student List";
+}
+
+<h3 class="mb-3">👩‍⚕️ Students Assigned to: @Model.Plan.VaccineName</h3>
+<p><strong>Scheduled Date:</strong> @Model.Plan.ScheduledDate.ToString("yyyy-MM-dd")</p>
+<p><strong>Target Group:</strong> @Model.Plan.TargetGroup</p>
+<p><strong>Notes:</strong> @Model.Plan.Notes</p>
+
+@if (!Model.Students.Any())
+{
+    <div class="alert alert-warning">No students assigned to this plan.</div>
+}
+else
+{
+    <div class="mb-3">
+        <input type="text" class="form-control" id="searchInput" placeholder="🔍 Search student by name..." onkeyup="filterTable()" />
+    </div>
+    <table class="table table-bordered table-hover" id="studentTable">
+        <thead class="table-light">
+            <tr>
+                <th>Student Name</th>
+                <th>Class</th>
+                <th>Status</th>
+                <th>Scheduled Date</th>
+                <th>Date Given</th>
+                <th>Note</th>
+                <th>Missed?</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var s in Model.Students)
+            {
+                <tr>
+                    <td>@s.StudentName</td>
+                    <td>@s.Class</td>
+                    <td>
+                        @if (s.Status == "Given")
+                        {
+                            <span class="badge bg-success">Given</span>
+                        }
+                        else if (s.Status == "Missed")
+                        {
+                            <span class="badge bg-danger">Missed</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-warning text-dark">Scheduled</span>
+                        }
+                    </td>
+                    <td>@s.ScheduledDate.ToString("yyyy-MM-dd")</td>
+                    <td>@(s.DateGiven?.ToString("yyyy-MM-dd") ?? "—")</td>
+                    <td>
+                        @if (!string.IsNullOrEmpty(s.ResultNote))
+                        {
+                            if (s.ResultNote.Length > 30)
+                            {
+                                <button class="btn btn-sm btn-outline-info"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#noteModal"
+                                        onclick="showNote('@s.ResultNote.Replace("'", "\\'")')">
+                                    📄 View Note
+                                </button>
+                            }
+                            else
+                            {
+                                <span>@s.ResultNote</span>
+                            }
+                        }
+                        else
+                        {
+                            <span>—</span>
+                        }
+                    </td>
+                    <td>
+                        <input type="checkbox" class="form-check-input missed-checkbox" data-student-id="@s.StudentId" />
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <button class="btn btn-primary mt-3" onclick="submitVaccinationStatus()">✅ Confirm Given for Remaining</button>
+}
+<div class="modal fade" id="noteModal" tabindex="-1" aria-labelledby="noteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="noteModalLabel">📝 Result Note</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="noteContent">
+                <!-- Note will appear here -->
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <script>
+        function showNote(note) {
+            document.getElementById("noteContent").innerText = note;
+        }
+    </script>
+    <script>
+        function filterTable() {
+            const input = document.getElementById("searchInput").value.toLowerCase();
+            const rows = document.querySelectorAll("#studentTable tbody tr");
+            rows.forEach(row => {
+                const name = row.querySelector("td").innerText.toLowerCase();
+                row.style.display = name.includes(input) ? "" : "none";
+            });
+        }
+    </script>
+    <script>
+        async function submitVaccinationStatus() {
+            const planId = @Model.Plan.Id;
+            const checkboxes = document.querySelectorAll(".missed-checkbox");
+            const updates = [];
+
+            checkboxes.forEach(cb => {
+                const studentId = parseInt(cb.dataset.studentId);
+                const isMissed = cb.checked;
+
+                updates.push({
+                    studentId: studentId,
+                    planId: planId,
+                    status: isMissed ? "Missed" : "Given",
+                    dateGiven: isMissed ? null : new Date().toISOString()
+                });
+            });
+
+            const res = await fetch('https://localhost:7115/api/vaccination/bulk-update', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(updates)
+            });
+
+            if (res.ok) location.reload();
+            else alert("❌ Failed to update statuses");
+        }
+    </script>
+}
