@@ -147,10 +147,38 @@
                                 <i class="fas fa-user-circle me-1"></i>Account
                             </a>
                             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                                @{
+                                    var userRole = Context.Session.GetString("UserRole");
+                                    var userId = Context.Session.GetString("UserId");
+                                }
                                 <li>
-                                    <a class="dropdown-item" href="/Auth/Profile">
-                                    <i class="fas fa-user me-2"></i>Profile
-                                </a></li>
+                                    @if (userRole == "Parent")
+                                    {
+                                        <a class="dropdown-item" href="/Parents/Details/@userId">
+                                            <i class="fas fa-user me-2"></i>Profile
+                                        </a>
+                                    }
+                                    else if (userRole == "SchoolNurse")
+                                    {
+                                        <a class="dropdown-item" href="/SchoolNurses/Details/@userId">
+                                            <i class="fas fa-user-nurse me-2"></i>Profile
+                                        </a>
+                                    }
+                                    else
+                                    {
+                                        <a class="dropdown-item" href="/Auth/Profile">
+                                            <i class="fas fa-user me-2"></i>Profile
+                                        </a>
+                                    }
+                                </li>
+                                @if (userRole == "Parent")
+                                {
+                                    <li>
+                                        <a class="dropdown-item" href="/MedicalRecords/MyChildren">
+                                            <i class="fas fa-child me-2"></i>My Children
+                                        </a>
+                                    </li>
+                                }
                                 <li><a class="dropdown-item" href="#">
                                     <i class="fas fa-cog me-2"></i>Settings
                                 </a></li>

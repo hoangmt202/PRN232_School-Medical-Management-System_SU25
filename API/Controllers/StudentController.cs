@@ -119,5 +119,15 @@ namespace API.Controllers
 
             return Ok(students);
         }
+        [HttpGet("children/{parentId}")]
+        public async Task<IActionResult> GetChildrenByParentId(int parentId)
+        {
+            var students = await _studentService.GetStudentsByParentUserIdAsync(parentId);
+            if (students == null || !students.Any())
+            {
+                return NotFound("No students found for this parent.");
+            }
+            return Ok(students);
+        }
     }
 } 

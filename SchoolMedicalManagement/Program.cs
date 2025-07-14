@@ -60,9 +60,4 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapRazorPages();
-app.MapGet("/", context =>
-{
-    context.Response.Redirect("/auth/login");
-    return Task.CompletedTask;
-});
 app.Run();

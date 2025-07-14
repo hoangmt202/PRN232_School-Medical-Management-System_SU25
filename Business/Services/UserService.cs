@@ -1,5 +1,4 @@
-﻿using BCrypt.Net;
-using BusinessLogic.DTOs;
+﻿using BusinessLogic.DTOs;
 using BusinessObject.Entity;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -25,7 +24,7 @@ namespace BusinessLogic.Services
                 account => account.Email == Email);
             if (account == null)
                 return null;
-            bool isValidPassword = BCrypt.Net.BCrypt.Verify(password, account.PasswordHash);
+            bool isValidPassword = password == account.PasswordHash;
 
             return isValidPassword ? account : null;
         }
@@ -37,13 +36,11 @@ namespace BusinessLogic.Services
             if (await _unitOfWork.UserRepository.AnyAsync(u => u.Username == dto.Username))
                 return (false, "Username already taken.");
 
-            var hashedPassword = BCrypt.Net.BCrypt.HashPassword(dto.Password);
-
             var user = new User
             {
                 Username = dto.Username,
                 Email = dto.Email,
-                PasswordHash = hashedPassword,
+                PasswordHash = dto.Password,
                 Role = "Parent"
             };
 
@@ -129,10 +126,10 @@ namespace BusinessLogic.Services
             var user = await _unitOfWork.UserRepository.GetByIdAsync(userId);
             if (user == null) return ServiceResult.FailureResult("User not found.");
 
-            bool isValid = BCrypt.Net.BCrypt.Verify(dto.CurrentPassword, user.PasswordHash);
+            bool isValid = dto.CurrentPassword == user.PasswordHash;
             if (!isValid) return ServiceResult.FailureResult("Current password is incorrect.");
 
-            user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.NewPassword);
+            user.PasswordHash = dto.NewPassword;
             _unitOfWork.UserRepository.Update(user);
             await _unitOfWork.SaveChangesAsync();
 

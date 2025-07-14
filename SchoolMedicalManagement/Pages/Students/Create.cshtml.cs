@@ -112,7 +112,8 @@ namespace SchoolMedicalManagement.Pages.Students
                 var response = await client.PostAsync("http://localhost:5234/api/Student", content);
                 if (response.IsSuccessStatusCode)
                 {
-                    return RedirectToPage("Index");
+                    // Redirect to parent's detail page after successful add
+                    return RedirectToPage("/Parents/Details", new { id = Student.ParentId });
                 }
                 else
                 {
