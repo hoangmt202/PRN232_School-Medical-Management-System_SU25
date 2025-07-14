@@ -173,11 +173,7 @@
                                 </li>
                                 @if (userRole == "Parent")
                                 {
-                                    <li>
-                                        <a class="dropdown-item" href="/MedicalRecords/MyChildren">
-                                            <i class="fas fa-child me-2"></i>My Children
-                                        </a>
-                                    </li>
+                                    @* Remove the My Children button for parents from the navigation. *@
                                 }
                                 <li><a class="dropdown-item" href="#">
                                     <i class="fas fa-cog me-2"></i>Settings
