@@ -136,5 +136,21 @@ namespace API.Controllers
                 return StatusCode(500, ex);
             }
         }
+        [HttpGet("by-userId/{userId}")]
+        public async Task<ActionResult<SchoolNurseResponseDTO>> GetByUserId(int userId)
+        {
+            try
+            {
+                var parent = await _schoolNurseService.GetSchoolNurseByUserIdAsync(userId);
+                if (parent == null)
+                    return NotFound(new { message = "Nurse not found" });
+
+                return Ok(parent);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Internal server error", error = ex.Message });
+            }
+        }
     }
 } 

@@ -8,7 +8,7 @@ using System.Text.Json;
 
 namespace SchoolMedicalManagement.Pages.Parents
 {
-    //[Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin,Manager")]
     public class CreateModel : PageModel
     {
         private readonly IHttpClientFactory _httpClientFactory;

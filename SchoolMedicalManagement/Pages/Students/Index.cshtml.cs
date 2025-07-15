@@ -1,4 +1,5 @@
 using BusinessLogic.DTOs;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Collections.Generic;
 using System.Text.Json;
@@ -6,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace SchoolMedicalManagement.Pages.Students
 {
+    [Authorize(Roles = "Admin,Manager")]
     public class IndexModel : PageModel
     {
         private readonly IHttpClientFactory _httpClientFactory;

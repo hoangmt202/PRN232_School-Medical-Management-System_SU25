@@ -30,8 +30,8 @@
                             </a>
                         </li>
 
-                        @* Show Management and Reports only for Admin or Manager *@
-                        @if (Context.Session.GetString("UserRole") != "SchoolNurse" && Context.Session.GetString("UserRole") != "Parent")
+                        @* Show Management only for Admin or Manager *@
+                        @if (Context.Session.GetString("UserRole") == "Admin" || Context.Session.GetString("UserRole") == "Manager")
                         {
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -39,8 +39,8 @@
                                 </a>
                                 <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                                     <li><a class="dropdown-item" asp-page="/Parents/Index"><i class="fas fa-user-friends me-2"></i>Parents</a></li>
-                                    <li><a class="dropdown-item" href="#"><i class="fas fa-user-graduate me-2"></i>Students</a></li>
-                                    <li><a class="dropdown-item" href="#"><i class="fas fa-user-md me-2"></i>Medical Staff</a></li>
+                                    <li><a class="dropdown-item" asp-page="/Students/Index"><i class="fas fa-user-graduate me-2"></i>Students</a></li>
+                                    <li><a class="dropdown-item" asp-page="/SchoolNurses/Index"><i class="fas fa-user-nurse me-2"></i>School Nurses</a></li>
                                     <li><hr class="dropdown-divider"></li>
                                     <li><a class="dropdown-item" href="#"><i class="fas fa-cog me-2"></i>Administration</a></li>
                                 </ul>
@@ -67,27 +67,7 @@
                             </li>
                         }
 
-                        @* Health Records Section (conditional) *@
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="fas fa-users me-1"></i>Management
-                            </a>
-                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                <li><a class="dropdown-item" asp-page="/Parents/Index">
-                                    <i class="fas fa-user-friends me-2"></i>Parents
-                                </a></li>
-                                <li><a class="dropdown-item" asp-page="/Students/Index">
-                                    <i class="fas fa-user-graduate me-2"></i>Students
-                                </a></li>
-                                <li><a class="dropdown-item" href="#">
-                                    <i class="fas fa-user-md me-2"></i>Medical Staff
-                                </a></li>
-                                <li><hr class="dropdown-divider"></li>
-                                <li><a class="dropdown-item" href="#">
-                                    <i class="fas fa-cog me-2"></i>Administration
-                                </a></li>
-                            </ul>
-                        </li>
+
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="healthDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 <i class="fas fa-notes-medical me-1"></i>Health Records
@@ -127,7 +107,7 @@
                         }
 
                         @* Reports only for Admin or Manager *@
-                        @if (Context.Session.GetString("UserRole") != "SchoolNurse" && Context.Session.GetString("UserRole") != "Parent")
+                        @if (Context.Session.GetString("UserRole") == "Admin" || Context.Session.GetString("UserRole") == "Manager")
                         {
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle" href="#" id="reportsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">

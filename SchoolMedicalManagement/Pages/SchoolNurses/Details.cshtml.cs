@@ -21,7 +21,7 @@ namespace SchoolMedicalManagement.Pages.SchoolNurses
             try
             {
                 var client = _httpClientFactory.CreateClient();
-                var response = await client.GetAsync($"http://localhost:5234/api/SchoolNurse/{id}");
+                var response = await client.GetAsync($"http://localhost:5234/api/SchoolNurse/by-userId/{id}");
                 if (response.IsSuccessStatusCode)
                 {
                     var content = await response.Content.ReadAsStringAsync();
