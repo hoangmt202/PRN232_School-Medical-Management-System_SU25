@@ -1,0 +1,85 @@
+@page "{id:int}"
+@model SchoolMedicalManagement.Pages.HealthChecks.EditModel
+@{
+    ViewData["Title"] = "Edit Health Check";
+}
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-warning text-dark">
+                    <h3 class="card-title mb-0">
+                        <i class="fas fa-edit me-2"></i>Edit Health Check
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+                        <input type="hidden" asp-for="HealthCheck.Id" />
+                        <input type="hidden" asp-for="HealthCheck.StudentId" />
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Student</label>
+                            <input value="@Model.StudentName" class="form-control" readonly />
+                            <small class="form-text text-muted">Student cannot be changed</small>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label asp-for="HealthCheck.Date" class="form-label">Date</label>
+                                    <input asp-for="HealthCheck.Date" type="date" class="form-control" />
+                                    <span asp-validation-for="HealthCheck.Date" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label asp-for="HealthCheck.CheckType" class="form-label">Check Type</label>
+                                    <select asp-for="HealthCheck.CheckType" class="form-select">
+                                        <option value="">-- Select Type --</option>
+                                        <option value="Vision Screening">Vision Screening</option>
+                                        <option value="Hearing Test">Hearing Test</option>
+                                        <option value="Physical Examination">Physical Examination</option>
+                                        <option value="Dental Check">Dental Check</option>
+                                        <option value="Height and Weight">Height and Weight</option>
+                                        <option value="Blood Pressure">Blood Pressure</option>
+                                        <option value="Immunization Review">Immunization Review</option>
+                                        <option value="General Health Assessment">General Health Assessment</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+                                    <span asp-validation-for="HealthCheck.CheckType" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="HealthCheck.Results" class="form-label">Results</label>
+                            <textarea asp-for="HealthCheck.Results" class="form-control" rows="4" placeholder="Enter the health check results"></textarea>
+                            <span asp-validation-for="HealthCheck.Results" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="HealthCheck.Notes" class="form-label">Notes (Optional)</label>
+                            <textarea asp-for="HealthCheck.Notes" class="form-control" rows="3" placeholder="Enter any additional notes or observations"></textarea>
+                            <span asp-validation-for="HealthCheck.Notes" class="text-danger"></span>
+                        </div>
+
+                        <div class="d-flex justify-content-between">
+                            <a asp-page="Index" class="btn btn-secondary">
+                                <i class="fas fa-arrow-left me-1"></i>Back to List
+                            </a>
+                            <button type="submit" class="btn btn-warning">
+                                <i class="fas fa-save me-1"></i>Update Health Check
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+} 

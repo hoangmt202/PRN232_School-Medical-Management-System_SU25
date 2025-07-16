@@ -1,0 +1,77 @@
+@page "{id:int}"
+@model SchoolMedicalManagement.Pages.HealthChecks.DeleteModel
+@{
+    ViewData["Title"] = "Delete Health Check";
+}
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-danger text-white">
+                    <h3 class="card-title mb-0">
+                        <i class="fas fa-trash me-2"></i>Delete Health Check
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-warning">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        <strong>Warning:</strong> Are you sure you want to delete this health check? This action cannot be undone.
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <strong>Student:</strong>
+                                <p class="form-control-plaintext">@Model.HealthCheck.Student?.FullName</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <strong>Date:</strong>
+                                <p class="form-control-plaintext">@Model.HealthCheck.Date.ToString("MMM dd, yyyy")</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <strong>Check Type:</strong>
+                        <p class="form-control-plaintext">
+                            <span class="badge bg-info text-dark">@Model.HealthCheck.CheckType</span>
+                        </p>
+                    </div>
+
+                    <div class="mb-3">
+                        <strong>Results:</strong>
+                        <p class="form-control-plaintext">@Model.HealthCheck.Results</p>
+                    </div>
+
+                    <div class="mb-3">
+                        <strong>Notes:</strong>
+                        <p class="form-control-plaintext">
+                            @if (!string.IsNullOrEmpty(Model.HealthCheck.Notes))
+                            {
+                                @Model.HealthCheck.Notes
+                            }
+                            else
+                            {
+                                <span class="text-muted">No notes available</span>
+                            }
+                        </p>
+                    </div>
+
+                    <form method="post">
+                        <div class="d-flex justify-content-between">
+                            <a asp-page="Index" class="btn btn-secondary">
+                                <i class="fas fa-arrow-left me-1"></i>Back to List
+                            </a>
+                            <button type="submit" class="btn btn-danger">
+                                <i class="fas fa-trash me-1"></i>Delete Health Check
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div> 

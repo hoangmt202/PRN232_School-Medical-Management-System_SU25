@@ -1,0 +1,84 @@
+### IncidentReport API Tests
+
+### Get all incident reports
+GET https://localhost:7001/api/IncidentReport
+Accept: application/json
+
+### Get incident report by ID
+GET https://localhost:7001/api/IncidentReport/1
+Accept: application/json
+
+### Get incident reports by nurse ID
+GET https://localhost:7001/api/IncidentReport/nurse/1
+Accept: application/json
+
+### Get incident reports by student ID
+GET https://localhost:7001/api/IncidentReport/student/1
+Accept: application/json
+
+### Create new incident report
+POST https://localhost:7001/api/IncidentReport
+Content-Type: application/json
+
+{
+  "studentId": 1,
+  "nurseId": 1,
+  "date": "2024-01-15T10:30:00",
+  "type": "Injury",
+  "description": "Student fell during recess and scraped knee",
+  "actionTaken": "Cleaned wound and applied bandage"
+}
+
+### Update incident report
+PUT https://localhost:7001/api/IncidentReport/1
+Content-Type: application/json
+
+{
+  "date": "2024-01-15T10:30:00",
+  "type": "Injury",
+  "description": "Student fell during recess and scraped knee - updated description",
+  "actionTaken": "Cleaned wound, applied bandage, and monitored for infection"
+}
+
+### Delete incident report
+DELETE https://localhost:7001/api/IncidentReport/1
+
+### HealthCheck API Tests
+
+### Get all health checks
+GET https://localhost:7001/api/HealthCheck
+Accept: application/json
+
+### Get health check by ID
+GET https://localhost:7001/api/HealthCheck/1
+Accept: application/json
+
+### Get health checks by student ID
+GET https://localhost:7001/api/HealthCheck/student/1
+Accept: application/json
+
+### Create new health check
+POST https://localhost:7001/api/HealthCheck
+Content-Type: application/json
+
+{
+  "studentId": 1,
+  "date": "2024-01-15T09:00:00",
+  "checkType": "Vision Screening",
+  "results": "Normal vision in both eyes",
+  "notes": "Student passed vision screening with no issues"
+}
+
+### Update health check
+PUT https://localhost:7001/api/HealthCheck/1
+Content-Type: application/json
+
+{
+  "date": "2024-01-15T09:00:00",
+  "checkType": "Vision Screening",
+  "results": "Normal vision in both eyes - 20/20",
+  "notes": "Student passed vision screening with excellent results"
+}
+
+### Delete health check
+DELETE https://localhost:7001/api/HealthCheck/1 

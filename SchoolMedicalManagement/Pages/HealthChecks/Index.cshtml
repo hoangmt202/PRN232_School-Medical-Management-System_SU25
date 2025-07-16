@@ -1,0 +1,106 @@
+@page
+@model SchoolMedicalManagement.Pages.HealthChecks.IndexModel
+@{
+    ViewData["Title"] = "Health Check Management";
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="card-title mb-0">
+                        <i class="fas fa-heartbeat me-2"></i>Health Check Management
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h4>All Health Checks</h4>
+                        <a asp-page="Create" class="btn btn-success">
+                            <i class="fas fa-plus me-1"></i>Add New Health Check
+                        </a>
+                    </div>
+
+                    @if (Model.HealthChecks != null && Model.HealthChecks.Any())
+                    {
+                        <div class="table-responsive">
+                            <table class="table table-striped table-hover">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Student</th>
+                                        <th>Date</th>
+                                        <th>Check Type</th>
+                                        <th>Results</th>
+                                        <th>Notes</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var healthCheck in Model.HealthChecks)
+                                    {
+                                        <tr>
+                                            <td>@healthCheck.Id</td>
+                                            <td>@healthCheck.Student?.FullName</td>
+                                            <td>@healthCheck.Date.ToString("MMM dd, yyyy")</td>
+                                            <td>
+                                                <span class="badge bg-info text-dark">@healthCheck.CheckType</span>
+                                            </td>
+                                            <td>
+                                                @if (healthCheck.Results.Length > 50)
+                                                {
+                                                    @(healthCheck.Results.Substring(0, 50) + "...")
+                                                }
+                                                else
+                                                {
+                                                    @healthCheck.Results
+                                                }
+                                            </td>
+                                            <td>
+                                                @if (!string.IsNullOrEmpty(healthCheck.Notes))
+                                                {
+                                                    @if (healthCheck.Notes.Length > 50)
+                                                    {
+                                                        @(healthCheck.Notes.Substring(0, 50) + "...")
+                                                    }
+                                                    else
+                                                    {
+                                                        @healthCheck.Notes
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    <span class="text-muted">No notes</span>
+                                                }
+                                            </td>
+                                            <td>
+                                                <div class="btn-group" role="group">
+                                                    <a asp-page="./Details" asp-route-id="@healthCheck.Id" class="btn btn-info btn-sm">
+                                                        <i class="fas fa-eye"></i>
+                                                    </a>
+                                                    <a asp-page="./Edit" asp-route-id="@healthCheck.Id" class="btn btn-warning btn-sm">
+                                                        <i class="fas fa-edit"></i>
+                                                    </a>
+                                                    <a asp-page="./Delete" asp-route-id="@healthCheck.Id" class="btn btn-danger btn-sm">
+                                                        <i class="fas fa-trash"></i>
+                                                    </a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="alert alert-info text-center">
+                            <i class="fas fa-info-circle me-2"></i>
+                            No health checks found. Click "Add New Health Check" to create the first health check record.
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div> 

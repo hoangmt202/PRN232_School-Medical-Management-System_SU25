@@ -1,0 +1,75 @@
+@page "{id:int}"
+@model SchoolMedicalManagement.Pages.HealthChecks.DetailsModel
+@{
+    ViewData["Title"] = "Health Check Details";
+}
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-info text-white">
+                    <h3 class="card-title mb-0">
+                        <i class="fas fa-heartbeat me-2"></i>Health Check Details
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <strong>Student:</strong>
+                                <p class="form-control-plaintext">@Model.HealthCheck.Student?.FullName</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <strong>Date:</strong>
+                                <p class="form-control-plaintext">@Model.HealthCheck.Date.ToString("MMM dd, yyyy")</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <strong>Check Type:</strong>
+                        <p class="form-control-plaintext">
+                            <span class="badge bg-info text-dark">@Model.HealthCheck.CheckType</span>
+                        </p>
+                    </div>
+
+                    <div class="mb-3">
+                        <strong>Results:</strong>
+                        <p class="form-control-plaintext">@Model.HealthCheck.Results</p>
+                    </div>
+
+                    <div class="mb-3">
+                        <strong>Notes:</strong>
+                        <p class="form-control-plaintext">
+                            @if (!string.IsNullOrEmpty(Model.HealthCheck.Notes))
+                            {
+                                @Model.HealthCheck.Notes
+                            }
+                            else
+                            {
+                                <span class="text-muted">No notes available</span>
+                            }
+                        </p>
+                    </div>
+
+                    <div class="d-flex justify-content-between">
+                        <a asp-page="Index" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left me-1"></i>Back to List
+                        </a>
+                        <div>
+                            <a asp-page="./Edit" asp-route-id="@Model.HealthCheck.Id" class="btn btn-warning me-2">
+                                <i class="fas fa-edit me-1"></i>Edit
+                            </a>
+                            <a asp-page="./Delete" asp-route-id="@Model.HealthCheck.Id" class="btn btn-danger">
+                                <i class="fas fa-trash me-1"></i>Delete
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div> 
