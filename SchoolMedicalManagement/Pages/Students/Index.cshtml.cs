@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 
 namespace SchoolMedicalManagement.Pages.Students
 {
-    [Authorize(Roles = "Admin,Manager")]
     public class IndexModel : PageModel
     {
         private readonly IHttpClientFactory _httpClientFactory;

@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 
 namespace SchoolMedicalManagement.Pages.SchoolNurses
 {
-    [Authorize(Roles = "Admin,Manager")]
     public class EditModel : PageModel
     {
         private readonly IHttpClientFactory _httpClientFactory;

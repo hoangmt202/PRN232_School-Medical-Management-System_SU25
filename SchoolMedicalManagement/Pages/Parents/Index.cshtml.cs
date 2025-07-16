@@ -5,7 +5,6 @@ using System.Text.Json;
 
 namespace SchoolMedicalManagement.Pages.Parents
 {
-    [Authorize(Roles = "Admin,Manager")]
     public class IndexModel : PageModel
     {
         private readonly IHttpClientFactory _httpClientFactory;
