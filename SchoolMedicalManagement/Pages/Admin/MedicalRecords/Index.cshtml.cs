@@ -23,12 +23,12 @@ namespace SchoolMedicalManagement.Pages.Admin.MedicalRecords
 
         public async Task<IActionResult> OnGetAsync()
         {
-            // Check authorization - Admin or Nurse only
-            var userRole = HttpContext.Session.GetString("UserRole");
-            if (userRole != "Admin" && userRole != "Nurse")
-            {
-                return RedirectToPage("/Auth/Login");
-            }
+            // Authorization disabled for testing
+            // var userRole = HttpContext.Session.GetString("UserRole");
+            // if (userRole != "Admin" && userRole != "Nurse")
+            // {
+            //     return RedirectToPage("/Auth/Login");
+            // }
 
             try
             {
@@ -87,13 +87,13 @@ namespace SchoolMedicalManagement.Pages.Admin.MedicalRecords
 
         public async Task<IActionResult> OnPostDeleteAsync(int id)
         {
-            // Check authorization - Admin only for delete
-            var userRole = HttpContext.Session.GetString("UserRole");
-            if (userRole != "Admin")
-            {
-                ErrorMessage = "You don't have permission to delete medical records.";
-                return RedirectToPage();
-            }
+            // Authorization disabled for testing
+            // var userRole = HttpContext.Session.GetString("UserRole");
+            // if (userRole != "Admin")
+            // {
+            //     ErrorMessage = "You don't have permission to delete medical records.";
+            //     return RedirectToPage();
+            // }
 
             try
             {

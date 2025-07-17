@@ -18,6 +18,13 @@ namespace SchoolMedicalManagement.Pages.Admin.HealthChecks
 
         public async Task<IActionResult> OnGetAsync(int id)
         {
+            // Block Parent from deleting health checks
+            var userRole = HttpContext.Session.GetString("UserRole");
+            if (userRole == "Parent")
+            {
+                return RedirectToPage("/Admin/HealthChecks/Index");
+            }
+            
             try
             {
                 var client = _httpClientFactory.CreateClient();
@@ -47,6 +54,13 @@ namespace SchoolMedicalManagement.Pages.Admin.HealthChecks
 
         public async Task<IActionResult> OnPostAsync(int id)
         {
+            // Block Parent from deleting health checks
+            var userRole = HttpContext.Session.GetString("UserRole");
+            if (userRole == "Parent")
+            {
+                return RedirectToPage("/Admin/HealthChecks/Index");
+            }
+            
             try
             {
                 var client = _httpClientFactory.CreateClient();

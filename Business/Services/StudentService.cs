@@ -48,7 +48,7 @@ namespace BusinessLogic.Services
         }
         public async Task<IEnumerable<Student>> GetStudentsByParentUserIdAsync(int parentUserId)
         {
-            var parent = await _parentRepository.GetAsync(p => p.Id == parentUserId);
+            var parent = await _parentRepository.GetAsync(p => p.UserId == parentUserId);
             if (parent == null)
             {
                 return Enumerable.Empty<Student>();

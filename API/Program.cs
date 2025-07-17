@@ -79,9 +79,9 @@ builder.Services
             ValidateIssuer = false,
             ValidateAudience = false,
             ValidateLifetime = false,
-            ValidIssuer = configuration["Jwt:Issuer"],
-            ValidAudience = configuration["Jwt:Audience"],
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:SecretKey"]))
+            ValidIssuer = configuration["JWT:Issuer"],
+            ValidAudience = configuration["JWT:Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JWT:SecretKey"]))
         };
     });
 
@@ -222,6 +222,30 @@ using (var scope = app.Services.CreateScope())
             await context.SaveChangesAsync();
             Console.WriteLine($"Parent record created with ID: {parent.Id}");
             
+            // Create test students for the parent
+            var student1 = new BusinessObject.Entity.Student
+            {
+                FullName = "Alice Johnson",
+                DateOfBirth = DateTime.Now.AddYears(-8),
+                Gender = "Female",
+                Class = "Grade 3A",
+                ParentId = parent.Id
+            };
+            
+            var student2 = new BusinessObject.Entity.Student
+            {
+                FullName = "Bob Johnson",
+                DateOfBirth = DateTime.Now.AddYears(-10),
+                Gender = "Male", 
+                Class = "Grade 5B",
+                ParentId = parent.Id
+            };
+            
+            context.Students.Add(student1);
+            context.Students.Add(student2);
+            await context.SaveChangesAsync();
+            Console.WriteLine($"Test students created: {student1.FullName} (ID: {student1.Id}), {student2.FullName} (ID: {student2.Id})");
+            
             // Create a test nurse user
             var nurseUser = new BusinessObject.Entity.User
             {
@@ -248,7 +272,41 @@ using (var scope = app.Services.CreateScope())
             await context.SaveChangesAsync();
             Console.WriteLine($"Nurse record created with ID: {nurse.Id}");
             
-            Console.WriteLine("Test users created successfully");
+            // Create test health checks for the students
+            var healthCheck1 = new BusinessObject.Entity.HealthCheck
+            {
+                StudentId = student1.Id,
+                Date = DateTime.Now.AddDays(-7),
+                CheckType = "Vision Test",
+                Results = "20/20 vision",
+                Notes = "Excellent eyesight"
+            };
+            
+            var healthCheck2 = new BusinessObject.Entity.HealthCheck
+            {
+                StudentId = student2.Id,
+                Date = DateTime.Now.AddDays(-5),
+                CheckType = "Hearing Test",
+                Results = "Normal hearing",
+                Notes = "No issues detected"
+            };
+            
+            var healthCheck3 = new BusinessObject.Entity.HealthCheck
+            {
+                StudentId = student1.Id,
+                Date = DateTime.Now.AddDays(-3),
+                CheckType = "Height & Weight",
+                Results = "Height: 120cm, Weight: 25kg",
+                Notes = "Normal growth rate"
+            };
+            
+            context.HealthChecks.Add(healthCheck1);
+            context.HealthChecks.Add(healthCheck2);
+            context.HealthChecks.Add(healthCheck3);
+            await context.SaveChangesAsync();
+            Console.WriteLine($"Test health checks created: {healthCheck1.Id}, {healthCheck2.Id}, {healthCheck3.Id}");
+            
+            Console.WriteLine("Test users and data created successfully");
         }
         else
         {

@@ -2,6 +2,7 @@ using BusinessLogic.DTOs.MedicalRecord;
 using BusinessLogic.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace API.Controllers
 {
@@ -69,6 +70,29 @@ namespace API.Controllers
             catch (Exception ex)
             {
                 return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        // GET: api/MedicalRecord/by-parent
+        [HttpGet("by-parent")]
+        public async Task<ActionResult<IEnumerable<MedicalRecordDto>>> GetByParent()
+        {
+            try
+            {
+                var userIdClaim = User.FindFirst("Id");
+                
+                if (userIdClaim == null || !int.TryParse(userIdClaim.Value, out int userId))
+                {
+                    return Unauthorized("Invalid or missing user ID.");
+                }
+
+                var medicalRecords = await _medicalRecordService.GetMedicalRecordsByParentUserIdAsync(userId);
+                
+                return Ok(medicalRecords);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Internal server error", error = ex.Message });
             }
         }
 

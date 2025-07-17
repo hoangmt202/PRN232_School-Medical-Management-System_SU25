@@ -40,16 +40,8 @@ namespace SchoolMedicalManagement.Pages.MedicalRecords
                     client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
                 }
 
-                // Get current user ID from claims
-                var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-                if (string.IsNullOrEmpty(userIdClaim) || !int.TryParse(userIdClaim, out int userId))
-                {
-                    // For testing - use hardcoded value
-                    userId = 101;
-                }
-
-                // Get parent's children
-                var studentsResponse = await client.GetAsync($"student/by-parent/{userId}");
+                // Get parent's children using JWT token
+                var studentsResponse = await client.GetAsync("student/by-parent");
                 if (!studentsResponse.IsSuccessStatusCode)
                 {
                     ErrorMessage = "Unable to load student information.";

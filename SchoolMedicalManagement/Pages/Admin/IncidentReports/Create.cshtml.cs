@@ -21,13 +21,28 @@ namespace SchoolMedicalManagement.Pages.Admin.IncidentReports
         public List<StudentResponseDTO> Students { get; set; } = new List<StudentResponseDTO>();
         public List<SchoolNurseResponseDTO> Nurses { get; set; } = new List<SchoolNurseResponseDTO>();
 
-        public async Task OnGetAsync()
+        public async Task<IActionResult> OnGetAsync()
         {
+            // Block Parent from creating incident reports
+            var userRole = HttpContext.Session.GetString("UserRole");
+            if (userRole == "Parent")
+            {
+                return RedirectToPage("/Admin/IncidentReports/Index");
+            }
+            
             await LoadDropdownData();
+            return Page();
         }
 
         public async Task<IActionResult> OnPostAsync()
         {
+            // Block Parent from creating incident reports
+            var userRole = HttpContext.Session.GetString("UserRole");
+            if (userRole == "Parent")
+            {
+                return RedirectToPage("/Admin/IncidentReports/Index");
+            }
+            
             if (!ModelState.IsValid)
             {
                 await LoadDropdownData();

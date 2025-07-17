@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Linq; // Added for .Select() and .ToList()
 
 namespace API.Controllers
 {
@@ -111,13 +112,26 @@ namespace API.Controllers
             {
                 return Unauthorized("Invalid or missing user ID.");
             }
+            
             var students = await _studentService.GetStudentsByParentUserIdAsync(userId);
             if (!students.Any())
             {
                 return NotFound("No students found for this parent user.");
             }
 
-            return Ok(students);
+            // Convert to StudentResponseDTO
+            var studentDtos = students.Select(s => new StudentResponseDTO
+            {
+                Id = s.Id,
+                FullName = s.FullName,
+                DateOfBirth = s.DateOfBirth,
+                Gender = s.Gender,
+                Class = s.Class,
+                ParentId = s.ParentId,
+                Parent = s.Parent
+            }).ToList();
+
+            return Ok(studentDtos);
         }
         [HttpGet("children/{parentId}")]
         public async Task<IActionResult> GetChildrenByParentId(int parentId)

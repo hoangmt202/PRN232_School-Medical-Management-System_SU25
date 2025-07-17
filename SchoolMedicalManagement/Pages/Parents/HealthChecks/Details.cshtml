@@ -1,0 +1,153 @@
+@page "/parents/health-checks/details/{id:int}"
+@model SchoolMedicalManagement.Pages.Parents.HealthChecks.DetailsModel
+@{
+    ViewData["Title"] = "Health Check Details";
+}
+
+<div class="container-fluid py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-10 col-md-12">
+            <!-- Header Section -->
+            <div class="card shadow-lg border-0 mb-4">
+                <div class="card-header bg-gradient-success text-white border-0 py-4">
+                    <div class="row align-items-center">
+                        <div class="col">
+                            <h4 class="mb-2 text-white">
+                                <i class="fas fa-heartbeat me-3"></i>Health Check Details
+                            </h4>
+                            <p class="mb-0 text-white-50">
+                                Check ID: <strong>#@Model.HealthCheck.Id</strong>
+                            </p>
+                        </div>
+                        <div class="col-auto">
+                            <a href="/parents/health-checks" class="btn btn-outline-light btn-sm">
+                                <i class="fas fa-arrow-left me-2"></i>Back
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Alert Messages -->
+            @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+            {
+                <div class="alert alert-danger alert-dismissible fade show shadow-sm" role="alert">
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        <div>
+                            <strong>Error:</strong> @Model.ErrorMessage
+                        </div>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
+
+            @if (Model.HealthCheck != null)
+            {
+                <!-- Main Details Card -->
+                <div class="card shadow-sm border-0 mb-4">
+                    <div class="card-header bg-light border-bottom">
+                        <h5 class="mb-0">
+                            <i class="fas fa-clipboard-check me-2 text-success"></i>Check Information
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold text-muted">Student:</label>
+                                <div class="d-flex align-items-center">
+                                    <div class="avatar bg-primary text-white rounded-circle me-3" style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;">
+                                        <i class="fas fa-user"></i>
+                                    </div>
+                                    <div>
+                                        <h6 class="mb-0">@Model.HealthCheck.Student?.FullName</h6>
+                                        <small class="text-muted">ID: @Model.HealthCheck.StudentId</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold text-muted">Check Date:</label>
+                                <div class="bg-light p-2 rounded">
+                                    <i class="far fa-calendar-alt me-2 text-success"></i>
+                                    @Model.HealthCheck.Date.ToString("dd/MM/yyyy HH:mm")
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-12 mb-3">
+                                <label class="form-label fw-bold text-muted">Check Type:</label>
+                                <div>
+                                    <span class="badge fs-6 
+                                        @(Model.HealthCheck.CheckType == "Khám tổng quát" ? "bg-primary" : 
+                                          Model.HealthCheck.CheckType == "Kiểm tra thị lực" ? "bg-info" : 
+                                          Model.HealthCheck.CheckType == "Kiểm tra răng miệng" ? "bg-warning" : 
+                                          Model.HealthCheck.CheckType == "Đo chiều cao cân nặng" ? "bg-success" : 
+                                          Model.HealthCheck.CheckType == "Đo huyết áp" ? "bg-danger" : 
+                                          Model.HealthCheck.CheckType == "Xét nghiệm máu" ? "bg-dark" : 
+                                          Model.HealthCheck.CheckType == "Chụp X-quang" ? "bg-secondary" : 
+                                          Model.HealthCheck.CheckType == "Kiểm tra tâm lý" ? "bg-info" : "bg-secondary")">
+                                        <i class="fas fa-stethoscope me-1"></i>
+                                        @Model.HealthCheck.CheckType
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        @if (!string.IsNullOrEmpty(Model.HealthCheck.Results))
+                        {
+                            <div class="mb-3">
+                                <label class="form-label fw-bold text-muted">Check Results:</label>
+                                <div class="bg-success bg-opacity-10 p-3 rounded border border-success border-opacity-25">
+                                    <p class="mb-0">@Model.HealthCheck.Results</p>
+                                </div>
+                            </div>
+                        }
+
+                        @if (!string.IsNullOrEmpty(Model.HealthCheck.Notes))
+                        {
+                            <div class="mb-3">
+                                <label class="form-label fw-bold text-muted">Notes:</label>
+                                <div class="bg-light p-3 rounded border">
+                                    <p class="mb-0">@Model.HealthCheck.Notes</p>
+                                </div>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="mb-3">
+                                <label class="form-label fw-bold text-muted">Notes:</label>
+                                <div class="bg-light p-3 rounded border">
+                                    <p class="mb-0 text-muted">No notes available</p>
+                                </div>
+                            </div>
+                        }
+
+                        <!-- Health Status Summary -->
+                        <div class="row mt-4">
+                            <div class="col-12">
+                                <div class="alert alert-info" role="alert">
+                                    <h6 class="alert-heading">
+                                        <i class="fas fa-info-circle me-2"></i>Additional Information
+                                    </h6>
+                                    <p class="mb-0">
+                                        If you have any questions about the health check results, 
+                                        please contact the school nurse or health department for detailed consultation.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Navigation -->
+                <div class="d-flex justify-content-between">
+                    <a href="/parents/health-checks" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left me-1"></i>Back to List
+                    </a>
+                    <!-- No Edit/Delete buttons for parents -->
+                </div>
+            }
+        </div>
+    </div>
+</div> 

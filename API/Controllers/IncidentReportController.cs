@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Linq;
+using System.Security.Claims;
 
 namespace API.Controllers
 {
@@ -12,10 +14,12 @@ namespace API.Controllers
     public class IncidentReportController : ControllerBase
     {
         private readonly IIncidentReportService _incidentReportService;
+        private readonly IStudentService _studentService;
 
-        public IncidentReportController(IIncidentReportService incidentReportService)
+        public IncidentReportController(IIncidentReportService incidentReportService, IStudentService studentService)
         {
             _incidentReportService = incidentReportService;
+            _studentService = studentService;
         }
 
         [HttpGet]
@@ -69,6 +73,39 @@ namespace API.Controllers
             {
                 var incidentReports = await _incidentReportService.GetIncidentReportsByStudentIdAsync(studentId);
                 return Ok(incidentReports);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Internal server error", error = ex.Message });
+            }
+        }
+
+        [HttpGet("by-parent")]
+        public async Task<ActionResult<IEnumerable<IncidentReportDto>>> GetByParent()
+        {
+            try
+            {
+                var userIdClaim = User.FindFirst("Id");
+                if (userIdClaim == null || !int.TryParse(userIdClaim.Value, out int userId))
+                {
+                    return Unauthorized("Invalid or missing user ID.");
+                }
+
+                // Get parent's children
+                var students = await _studentService.GetStudentsByParentUserIdAsync(userId);
+                if (!students.Any())
+                {
+                    return Ok(new List<IncidentReportDto>());
+                }
+
+                var childrenIds = students.Select(s => s.Id).ToList();
+                var allIncidentReports = await _incidentReportService.GetAllIncidentReportsAsync();
+                
+                var parentIncidentReports = allIncidentReports
+                    .Where(ir => childrenIds.Contains(ir.StudentId))
+                    .OrderByDescending(ir => ir.Date);
+
+                return Ok(parentIncidentReports);
             }
             catch (Exception ex)
             {

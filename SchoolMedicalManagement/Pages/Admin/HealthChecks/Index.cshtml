@@ -13,10 +13,16 @@
                         <i class="fas fa-heartbeat me-2"></i>
                         Quản lý Kiểm tra Sức khỏe
                     </h3>
-                    <a href="/Admin/HealthChecks/Create" class="btn btn-primary">
-                        <i class="fas fa-plus me-2"></i>
-                        Tạo Kiểm tra mới
-                    </a>
+                    @{
+                        var userRole = HttpContext.Session.GetString("UserRole");
+                    }
+                    @if (userRole != "Parent")
+                    {
+                        <a href="/Admin/HealthChecks/Create" class="btn btn-primary">
+                            <i class="fas fa-plus me-2"></i>
+                            Tạo Kiểm tra mới
+                        </a>
+                    }
                 </div>
                 <div class="card-body">
                     @if (Model.HealthChecks.Any())
@@ -96,16 +102,19 @@
                                                        title="Xem chi tiết">
                                                         <i class="fas fa-eye"></i>
                                                     </a>
-                                                    <a href="/Admin/HealthChecks/Edit/@healthCheck.Id" 
-                                                       class="btn btn-sm btn-outline-warning" 
-                                                       title="Chỉnh sửa">
-                                                        <i class="fas fa-edit"></i>
-                                                    </a>
-                                                    <a href="/Admin/HealthChecks/Delete/@healthCheck.Id" 
-                                                       class="btn btn-sm btn-outline-danger" 
-                                                       title="Xóa">
-                                                        <i class="fas fa-trash"></i>
-                                                    </a>
+                                                    @if (userRole != "Parent")
+                                                    {
+                                                        <a href="/Admin/HealthChecks/Edit/@healthCheck.Id" 
+                                                           class="btn btn-sm btn-outline-warning" 
+                                                           title="Chỉnh sửa">
+                                                            <i class="fas fa-edit"></i>
+                                                        </a>
+                                                        <a href="/Admin/HealthChecks/Delete/@healthCheck.Id" 
+                                                           class="btn btn-sm btn-outline-danger" 
+                                                           title="Xóa">
+                                                            <i class="fas fa-trash"></i>
+                                                        </a>
+                                                    }
                                                 </div>
                                             </td>
                                         </tr>

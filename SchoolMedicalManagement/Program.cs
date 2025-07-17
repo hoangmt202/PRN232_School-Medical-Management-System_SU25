@@ -1,5 +1,6 @@
 using BusinessLogic.Services;
 using BusinessObject.Entity;
+using System.Net.Http.Headers;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddHttpContextAccessor();
@@ -11,10 +12,20 @@ builder.Services.AddSession();
 builder.Services.AddSignalR();
 var apiBase = builder.Configuration["ApiBaseUrls:SchoolMedicalApi"];
 
+// Register JWT Token Handler first
+builder.Services.AddScoped<JwtTokenHandler>();
+
+// Add HTTP client with custom delegation handler for JWT token
 builder.Services.AddHttpClient("API", client =>
 {
     client.BaseAddress = new Uri(apiBase!);
-});
+    client.DefaultRequestHeaders.Add("User-Agent", "SchoolMedicalManagement");
+})
+.AddHttpMessageHandler<JwtTokenHandler>();
+
+// Also add a default HTTP client for comparison
+builder.Services.AddHttpClient();
+
 // Add Authentication
 builder.Services.AddAuthentication("Cookies")
     .AddCookie(options =>
@@ -34,10 +45,10 @@ builder.Services.AddAuthorization(options =>
 
 builder.Services.AddSession(options =>
 {
-    options.IdleTimeout = TimeSpan.FromMinutes(30); // Set session timeout
+    options.IdleTimeout = TimeSpan.FromMinutes(30);
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
-    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+    options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
 });
 
 var app = builder.Build();
@@ -46,7 +57,6 @@ var app = builder.Build();
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
@@ -61,3 +71,30 @@ app.UseAuthorization();
 
 app.MapRazorPages();
 app.Run();
+
+// JWT Token Handler to automatically add token to API requests
+public class JwtTokenHandler : DelegatingHandler
+{
+    private readonly IHttpContextAccessor _httpContextAccessor;
+
+    public JwtTokenHandler(IHttpContextAccessor httpContextAccessor)
+    {
+        _httpContextAccessor = httpContextAccessor;
+    }
+
+    protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+    {
+        var httpContext = _httpContextAccessor.HttpContext;
+        if (httpContext != null)
+        {
+            var token = httpContext.Request.Cookies["AuthToken"];
+            
+            if (!string.IsNullOrEmpty(token))
+            {
+                request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            }
+        }
+
+        return await base.SendAsync(request, cancellationToken);
+    }
+}

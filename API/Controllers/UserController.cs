@@ -55,6 +55,22 @@ namespace API.Controllers
         //    }
         //}
 
+        [HttpGet("debug-token")]
+        public IActionResult DebugToken()
+        {
+            var authHeader = Request.Headers["Authorization"].FirstOrDefault();
+            var result = new
+            {
+                AuthHeader = authHeader ?? "Missing",
+                HasBearer = authHeader?.StartsWith("Bearer ") ?? false,
+                UserClaims = User.Claims.Select(c => new { Type = c.Type, Value = c.Value }).ToList(),
+                IsAuthenticated = User.Identity?.IsAuthenticated ?? false,
+                UserIdClaim = User.FindFirst("Id")?.Value ?? "Missing"
+            };
+            
+            return Ok(result);
+        }
+
         [HttpPost("login")]
         public async Task<IActionResult> login([FromBody] LoginRequest loginDTO)
         {
@@ -77,12 +93,12 @@ namespace API.Controllers
                 new Claim(ClaimTypes.Role, account.Role.ToString()),
                 new Claim("Id", account.Id.ToString()),
             };
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:SecretKey"]));
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JWT:SecretKey"]));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
             var preparedToken = new JwtSecurityToken(
-                issuer: configuration["Jwt:Issuer"],
-                audience: configuration["Jwt:Audience"],
+                issuer: configuration["JWT:Issuer"],
+                audience: configuration["JWT:Audience"],
                 claims: claims,
                 expires: DateTime.Now.AddMinutes(30),
                 signingCredentials: creds);

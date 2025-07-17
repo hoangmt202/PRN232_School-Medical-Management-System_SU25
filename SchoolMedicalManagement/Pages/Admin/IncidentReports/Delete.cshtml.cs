@@ -18,6 +18,13 @@ namespace SchoolMedicalManagement.Pages.Admin.IncidentReports
 
         public async Task<IActionResult> OnGetAsync(int id)
         {
+            // Block Parent from deleting incident reports
+            var userRole = HttpContext.Session.GetString("UserRole");
+            if (userRole == "Parent")
+            {
+                return RedirectToPage("/Admin/IncidentReports/Index");
+            }
+            
             try
             {
                 var client = _httpClientFactory.CreateClient();
@@ -47,6 +54,13 @@ namespace SchoolMedicalManagement.Pages.Admin.IncidentReports
 
         public async Task<IActionResult> OnPostAsync(int id)
         {
+            // Block Parent from deleting incident reports
+            var userRole = HttpContext.Session.GetString("UserRole");
+            if (userRole == "Parent")
+            {
+                return RedirectToPage("/Admin/IncidentReports/Index");
+            }
+            
             try
             {
                 var client = _httpClientFactory.CreateClient();

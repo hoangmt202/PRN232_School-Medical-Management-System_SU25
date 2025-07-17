@@ -1,22 +1,20 @@
 using BusinessLogic.DTOs.MedicalRecord;
 using BusinessLogic.DTOs.Medication;
-using BusinessLogic.Services;
-using BusinessObject.Entity;
+using BusinessLogic.DTOs;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using System.Security.Claims;
+using System.Text.Json;
+using System.Text;
 
 namespace SchoolMedicalManagement.Pages.MedicalRecords
 {
     public class AddModel : PageModel
     {
-        private readonly IMedicationService _medicationService;
-        private readonly IStudentService _studentService;
+        private readonly IHttpClientFactory _httpClientFactory;
 
-        public AddModel(IMedicationService medicationService, IStudentService studentService)
+        public AddModel(IHttpClientFactory httpClientFactory)
         {
-            _medicationService = medicationService;
-            _studentService = studentService;
+            _httpClientFactory = httpClientFactory;
         }
 
         [BindProperty]
@@ -41,7 +39,9 @@ namespace SchoolMedicalManagement.Pages.MedicalRecords
 
             try
             {
-                var createDto = new Medication
+                var client = _httpClientFactory.CreateClient("API");
+
+                var createDto = new CreateMedicationDto
                 {
                     StudentId = Medication.StudentId,
                     MedicationName = Medication.MedicationName,
@@ -49,12 +49,22 @@ namespace SchoolMedicalManagement.Pages.MedicalRecords
                     Frequency = Medication.Frequency
                 };
 
-                await _medicationService.AddMedicationAsync(createDto);
-                SuccessMessage = "Medication submission successful! The school nurse will review and manage the medication.";
+                var jsonContent = JsonSerializer.Serialize(createDto);
+                var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
 
-                // Clear form
-                Medication = new MedicationSubmissionViewModel();
-                await LoadStudentsAsync();
+                var response = await client.PostAsync("medication", content);
+                if (response.IsSuccessStatusCode)
+                {
+                    SuccessMessage = "Medication submission successful! The school nurse will review and manage the medication.";
+                    // Clear form
+                    Medication = new MedicationSubmissionViewModel();
+                    await LoadStudentsAsync();
+                }
+                else
+                {
+                    ErrorMessage = "Failed to submit medication. Please try again.";
+                    await LoadStudentsAsync();
+                }
 
                 return Page();
             }
@@ -70,16 +80,31 @@ namespace SchoolMedicalManagement.Pages.MedicalRecords
         {
             try
             {
-                var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-                if (int.TryParse(userIdClaim, out int userId))
+                var client = _httpClientFactory.CreateClient("API");
+                
+                // Get students for the current parent using by-parent endpoint
+                var studentsResponse = await client.GetAsync("student/by-parent");
+                if (studentsResponse.IsSuccessStatusCode)
                 {
-                    var students = await _studentService.GetStudentsByParentUserIdAsync(userId);
-                    Medication.Students = students.Select(s => new StudentOption
+                    var studentsJson = await studentsResponse.Content.ReadAsStringAsync();
+                    var students = JsonSerializer.Deserialize<List<StudentResponseDTO>>(studentsJson, new JsonSerializerOptions
                     {
-                        Id = s.Id,
-                        Name = s.FullName,
-                        Class = s.Class ?? "N/A"
-                    }).ToList();
+                        PropertyNameCaseInsensitive = true
+                    });
+
+                    if (students != null)
+                    {
+                        Medication.Students = students.Select(s => new StudentOption
+                        {
+                            Id = s.Id,
+                            Name = s.FullName,
+                            Class = s.Class ?? "N/A"
+                        }).ToList();
+                    }
+                }
+                else
+                {
+                    Medication.Students = new List<StudentOption>();
                 }
             }
             catch (Exception)

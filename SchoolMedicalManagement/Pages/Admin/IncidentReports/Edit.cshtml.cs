@@ -23,6 +23,13 @@ namespace SchoolMedicalManagement.Pages.Admin.IncidentReports
 
         public async Task<IActionResult> OnGetAsync(int id)
         {
+            // Block Parent from editing incident reports
+            var userRole = HttpContext.Session.GetString("UserRole");
+            if (userRole == "Parent")
+            {
+                return RedirectToPage("/Admin/IncidentReports/Index");
+            }
+            
             try
             {
                 IncidentReportId = id;
@@ -60,6 +67,13 @@ namespace SchoolMedicalManagement.Pages.Admin.IncidentReports
 
         public async Task<IActionResult> OnPostAsync()
         {
+            // Block Parent from editing incident reports
+            var userRole = HttpContext.Session.GetString("UserRole");
+            if (userRole == "Parent")
+            {
+                return RedirectToPage("/Admin/IncidentReports/Index");
+            }
+            
             if (!ModelState.IsValid)
             {
                 return Page();

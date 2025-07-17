@@ -13,10 +13,16 @@
                         <i class="fas fa-exclamation-triangle me-2"></i>
                         Quản lý Báo cáo Sự cố
                     </h3>
-                    <a href="/Admin/IncidentReports/Create" class="btn btn-primary">
-                        <i class="fas fa-plus me-2"></i>
-                        Tạo Báo cáo mới
-                    </a>
+                    @{
+                        var userRole = HttpContext.Session.GetString("UserRole");
+                    }
+                    @if (userRole != "Parent")
+                    {
+                        <a href="/Admin/IncidentReports/Create" class="btn btn-primary">
+                            <i class="fas fa-plus me-2"></i>
+                            Tạo Báo cáo mới
+                        </a>
+                    }
                 </div>
                 <div class="card-body">
                     @if (Model.IncidentReports.Any())
@@ -99,16 +105,19 @@
                                                        title="Xem chi tiết">
                                                         <i class="fas fa-eye"></i>
                                                     </a>
-                                                    <a href="/Admin/IncidentReports/Edit/@incident.Id" 
-                                                       class="btn btn-sm btn-outline-warning" 
-                                                       title="Chỉnh sửa">
-                                                        <i class="fas fa-edit"></i>
-                                                    </a>
-                                                    <a href="/Admin/IncidentReports/Delete/@incident.Id" 
-                                                       class="btn btn-sm btn-outline-danger" 
-                                                       title="Xóa">
-                                                        <i class="fas fa-trash"></i>
-                                                    </a>
+                                                    @if (userRole != "Parent")
+                                                    {
+                                                        <a href="/Admin/IncidentReports/Edit/@incident.Id" 
+                                                           class="btn btn-sm btn-outline-warning" 
+                                                           title="Chỉnh sửa">
+                                                            <i class="fas fa-edit"></i>
+                                                        </a>
+                                                        <a href="/Admin/IncidentReports/Delete/@incident.Id" 
+                                                           class="btn btn-sm btn-outline-danger" 
+                                                           title="Xóa">
+                                                            <i class="fas fa-trash"></i>
+                                                        </a>
+                                                    }
                                                 </div>
                                             </td>
                                         </tr>

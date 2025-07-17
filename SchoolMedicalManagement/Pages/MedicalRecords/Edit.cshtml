@@ -20,7 +20,11 @@
                             </p>
                         </div>
                         <div class="col-auto">
-                            <a href="/MedicalRecords/Index" class="btn btn-outline-light btn-sm">
+                            @{
+                                var userRole = HttpContext.Session.GetString("UserRole");
+                                var backUrl = userRole == "Parent" ? "/parent/medical-record" : "/admin/medical-records";
+                            }
+                            <a href="@backUrl" class="btn btn-outline-light btn-sm">
                                 <i class="fas fa-arrow-left me-2"></i>Back to Records
                             </a>
                         </div>

@@ -13,10 +13,12 @@ namespace BusinessLogic.Services
     public class MedicalRecordService : IMedicalRecordService
     {
         private readonly IUnitOfWorks _repo;
+        private readonly IStudentService _studentService;
 
-        public MedicalRecordService(IUnitOfWorks repo)
+        public MedicalRecordService(IUnitOfWorks repo, IStudentService studentService)
         {
             _repo = repo;
+            _studentService = studentService;
         }
 
         public async Task<IEnumerable<MedicalRecordDto>> GetAllMedicalRecordsAsync()
@@ -41,6 +43,26 @@ namespace BusinessLogic.Services
         {
             var medicalRecord = await _repo.MedicalRecordRepository.GetByStudentIdAsync(studentId);
             return medicalRecord != null ? MapToDto(medicalRecord) : null;
+        }
+
+        public async Task<IEnumerable<MedicalRecordDto>> GetMedicalRecordsByParentUserIdAsync(int parentUserId)
+        {
+            // Get all students for this parent
+            var students = await _studentService.GetStudentsByParentUserIdAsync(parentUserId);
+            
+            if (!students.Any())
+            {
+                return new List<MedicalRecordDto>();
+            }
+
+            var studentIds = students.Select(s => s.Id).ToList();
+            var allMedicalRecords = await _repo.MedicalRecordRepository.GetAllAsync("Student");
+            
+            var parentMedicalRecords = allMedicalRecords
+                .Where(mr => studentIds.Contains(mr.StudentId))
+                .OrderBy(mr => mr.Student.FullName);
+
+            return parentMedicalRecords.Select(MapToDto);
         }
 
         public async Task<MedicalRecordDto> CreateMedicalRecordAsync(CreateMedicalRecordDto createDto)

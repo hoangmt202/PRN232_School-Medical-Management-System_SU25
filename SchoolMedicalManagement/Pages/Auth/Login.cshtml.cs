@@ -167,11 +167,11 @@ namespace SchoolMedicalManagement.Pages.Auth
                         Response.Cookies.Append("AuthToken", loginResponse.Token, new CookieOptions
                         {
                             HttpOnly = true,
-                            Secure = Request.IsHttps, // Only secure in HTTPS
+                            Secure = false, // Allow in development (HTTP)
                             SameSite = SameSiteMode.Lax, // Less strict for development
                             Expires = Input.RememberMe ?
                                 DateTimeOffset.Now.AddDays(30) :
-                                DateTimeOffset.Now.AddHours(1)
+                                DateTimeOffset.Now.AddHours(8)
                         });
 
                         // Store user role, username, and userId in session

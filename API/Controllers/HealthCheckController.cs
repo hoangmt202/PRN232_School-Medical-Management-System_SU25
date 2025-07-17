@@ -4,6 +4,9 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Linq;
+using System.Security.Claims;
+using Microsoft.Extensions.Logging;
 
 namespace API.Controllers
 {
@@ -12,11 +15,17 @@ namespace API.Controllers
     public class HealthCheckController : ControllerBase
     {
         private readonly IHealthCheckService _healthCheckService;
+        private readonly IStudentService _studentService;
+        private readonly ILogger<HealthCheckController> _logger;
 
-        public HealthCheckController(IHealthCheckService healthCheckService)
+        public HealthCheckController(IHealthCheckService healthCheckService, IStudentService studentService, ILogger<HealthCheckController> logger)
         {
             _healthCheckService = healthCheckService;
+            _studentService = studentService;
+            _logger = logger;
         }
+
+
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<HealthCheckDto>>> GetAll()
@@ -55,6 +64,41 @@ namespace API.Controllers
             {
                 var healthChecks = await _healthCheckService.GetHealthChecksByStudentIdAsync(studentId);
                 return Ok(healthChecks);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Internal server error", error = ex.Message });
+            }
+        }
+
+        [HttpGet("by-parent")]
+        public async Task<ActionResult<IEnumerable<HealthCheckDto>>> GetByParent()
+        {
+            try
+            {
+                var userIdClaim = User.FindFirst("Id");
+                
+                if (userIdClaim == null || !int.TryParse(userIdClaim.Value, out int userId))
+                {
+                    return Unauthorized("Invalid or missing user ID.");
+                }
+
+                // Get parent's children
+                var students = await _studentService.GetStudentsByParentUserIdAsync(userId);
+                
+                if (!students.Any())
+                {
+                    return Ok(new List<HealthCheckDto>());
+                }
+
+                var childrenIds = students.Select(s => s.Id).ToList();
+                var allHealthChecks = await _healthCheckService.GetAllHealthChecksAsync();
+                
+                var parentHealthChecks = allHealthChecks
+                    .Where(hc => childrenIds.Contains(hc.StudentId))
+                    .OrderByDescending(hc => hc.Date);
+
+                return Ok(parentHealthChecks);
             }
             catch (Exception ex)
             {

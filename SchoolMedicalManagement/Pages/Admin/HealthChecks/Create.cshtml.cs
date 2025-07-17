@@ -20,13 +20,28 @@ namespace SchoolMedicalManagement.Pages.Admin.HealthChecks
 
         public List<StudentResponseDTO> Students { get; set; } = new List<StudentResponseDTO>();
 
-        public async Task OnGetAsync()
+        public async Task<IActionResult> OnGetAsync()
         {
+            // Block Parent from creating health checks
+            var userRole = HttpContext.Session.GetString("UserRole");
+            if (userRole == "Parent")
+            {
+                return RedirectToPage("/Admin/HealthChecks/Index");
+            }
+            
             await LoadStudents();
+            return Page();
         }
 
         public async Task<IActionResult> OnPostAsync()
         {
+            // Block Parent from creating health checks
+            var userRole = HttpContext.Session.GetString("UserRole");
+            if (userRole == "Parent")
+            {
+                return RedirectToPage("/Admin/HealthChecks/Index");
+            }
+            
             if (!ModelState.IsValid)
             {
                 await LoadStudents();

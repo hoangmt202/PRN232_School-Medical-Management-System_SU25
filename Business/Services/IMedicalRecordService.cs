@@ -12,6 +12,7 @@ namespace BusinessLogic.Services
         Task<IEnumerable<MedicalRecordDto>> GetAllMedicalRecordsAsync();
         Task<MedicalRecordDto?> GetMedicalRecordByIdAsync(int id);
         Task<MedicalRecordDto?> GetMedicalRecordByStudentIdAsync(int studentId);
+        Task<IEnumerable<MedicalRecordDto>> GetMedicalRecordsByParentUserIdAsync(int parentUserId);
         Task<MedicalRecordDto> CreateMedicalRecordAsync(CreateMedicalRecordDto createDto);
         Task<MedicalRecordDto?> UpdateMedicalRecordAsync(int id, UpdateMedicalRecordDto updateDto);
         Task<bool> DeleteMedicalRecordAsync(int id);
