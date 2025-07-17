@@ -1,0 +1,100 @@
+@page "{id:int}"
+@model SchoolMedicalManagement.Pages.Admin.IncidentReports.DeleteModel
+@{
+    ViewData["Title"] = "Xóa Báo cáo Sự cố";
+}
+
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card border-danger">
+                <div class="card-header bg-danger text-white">
+                    <h3 class="card-title mb-0">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        Xác nhận Xóa Báo cáo Sự cố
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-warning">
+                        <i class="fas fa-warning me-2"></i>
+                        <strong>Cảnh báo:</strong> Bạn có chắc chắn muốn xóa báo cáo sự cố này? 
+                        Hành động này không thể hoàn tác!
+                    </div>
+
+                    <div class="mb-4">
+                        <h5 class="text-danger mb-3">Thông tin Báo cáo sẽ bị xóa:</h5>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <p><strong>ID:</strong> #@Model.IncidentReport.Id</p>
+                                <p><strong>Học sinh:</strong> 
+                                    @if (Model.IncidentReport.Student != null)
+                                    {
+                                        @Model.IncidentReport.Student.FullName
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">ID: @Model.IncidentReport.StudentId</span>
+                                    }
+                                </p>
+                                <p><strong>Y tá:</strong> 
+                                    @if (Model.IncidentReport.Nurse != null)
+                                    {
+                                        @Model.IncidentReport.Nurse.FullName
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">ID: @Model.IncidentReport.NurseId</span>
+                                    }
+                                </p>
+                            </div>
+                            <div class="col-md-6">
+                                <p><strong>Ngày/Giờ:</strong> @Model.IncidentReport.Date.ToString("dd/MM/yyyy HH:mm")</p>
+                                <p><strong>Loại sự cố:</strong> 
+                                    <span class="badge bg-warning text-dark">@Model.IncidentReport.Type</span>
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="mt-3">
+                            <p><strong>Mô tả:</strong></p>
+                            <div class="bg-light p-3 rounded">
+                                @Model.IncidentReport.Description
+                            </div>
+                        </div>
+
+                        <div class="mt-3">
+                            <p><strong>Hành động đã thực hiện:</strong></p>
+                            <div class="bg-light p-3 rounded">
+                                @Model.IncidentReport.ActionTaken
+                            </div>
+                        </div>
+                    </div>
+
+                    <form method="post">
+                        <div class="d-flex justify-content-between">
+                            <a href="/Admin/IncidentReports/Index" class="btn btn-secondary">
+                                <i class="fas fa-arrow-left me-2"></i>
+                                Hủy bỏ
+                            </a>
+                            <button type="submit" class="btn btn-danger">
+                                <i class="fas fa-trash me-2"></i>
+                                Xác nhận Xóa
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.card-header {
+    background: linear-gradient(45deg, #dc3545, #c82333) !important;
+}
+.btn-danger {
+    background: linear-gradient(45deg, #dc3545, #c82333);
+    border: none;
+}
+</style> 

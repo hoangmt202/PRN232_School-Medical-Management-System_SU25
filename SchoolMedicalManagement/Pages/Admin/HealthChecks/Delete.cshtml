@@ -1,0 +1,94 @@
+@page "{id:int}"
+@model SchoolMedicalManagement.Pages.Admin.HealthChecks.DeleteModel
+@{
+    ViewData["Title"] = "Xóa Kiểm tra Sức khỏe";
+}
+
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card border-danger">
+                <div class="card-header bg-danger text-white">
+                    <h3 class="card-title mb-0">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        Xác nhận Xóa Kiểm tra Sức khỏe
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-warning">
+                        <i class="fas fa-warning me-2"></i>
+                        <strong>Cảnh báo:</strong> Bạn có chắc chắn muốn xóa kiểm tra sức khỏe này? 
+                        Hành động này không thể hoàn tác!
+                    </div>
+
+                    <div class="mb-4">
+                        <h5 class="text-danger mb-3">Thông tin Kiểm tra sẽ bị xóa:</h5>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <p><strong>ID:</strong> #@Model.HealthCheck.Id</p>
+                                <p><strong>Học sinh:</strong> 
+                                    @if (Model.HealthCheck.Student != null)
+                                    {
+                                        @Model.HealthCheck.Student.FullName
+                                        <br><small class="text-muted">@Model.HealthCheck.Student.Class</small>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">ID: @Model.HealthCheck.StudentId</span>
+                                    }
+                                </p>
+                            </div>
+                            <div class="col-md-6">
+                                <p><strong>Ngày kiểm tra:</strong> @Model.HealthCheck.Date.ToString("dd/MM/yyyy")</p>
+                                <p><strong>Loại kiểm tra:</strong> 
+                                    <span class="badge bg-success">@Model.HealthCheck.CheckType</span>
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="mt-3">
+                            <p><strong>Kết quả:</strong></p>
+                            <div class="bg-light p-3 rounded">
+                                @Model.HealthCheck.Results
+                            </div>
+                        </div>
+
+                        @if (!string.IsNullOrEmpty(Model.HealthCheck.Notes))
+                        {
+                            <div class="mt-3">
+                                <p><strong>Ghi chú:</strong></p>
+                                <div class="bg-light p-3 rounded">
+                                    @Model.HealthCheck.Notes
+                                </div>
+                            </div>
+                        }
+                    </div>
+
+                    <form method="post">
+                        <div class="d-flex justify-content-between">
+                            <a href="/Admin/HealthChecks/Index" class="btn btn-secondary">
+                                <i class="fas fa-arrow-left me-2"></i>
+                                Hủy bỏ
+                            </a>
+                            <button type="submit" class="btn btn-danger">
+                                <i class="fas fa-trash me-2"></i>
+                                Xác nhận Xóa
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.card-header {
+    background: linear-gradient(45deg, #dc3545, #c82333) !important;
+}
+.btn-danger {
+    background: linear-gradient(45deg, #dc3545, #c82333);
+    border: none;
+}
+</style> 

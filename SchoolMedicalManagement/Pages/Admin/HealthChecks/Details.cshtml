@@ -1,0 +1,118 @@
+@page "{id:int}"
+@model SchoolMedicalManagement.Pages.Admin.HealthChecks.DetailsModel
+@{
+    ViewData["Title"] = "Chi tiết Kiểm tra Sức khỏe";
+}
+
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        <i class="fas fa-heartbeat me-2"></i>
+                        Chi tiết Kiểm tra Sức khỏe #@Model.HealthCheck.Id
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-4">
+                                <h5 class="text-primary">
+                                    <i class="fas fa-user-graduate me-2"></i>
+                                    Thông tin Học sinh
+                                </h5>
+                                <div class="ps-3">
+                                    @if (Model.HealthCheck.Student != null)
+                                    {
+                                        <p><strong>Họ tên:</strong> @Model.HealthCheck.Student.FullName</p>
+                                        <p><strong>Lớp:</strong> @Model.HealthCheck.Student.Class</p>
+                                        <p><strong>Ngày sinh:</strong> @Model.HealthCheck.Student.DateOfBirth.ToString("dd/MM/yyyy")</p>
+                                        <p><strong>Giới tính:</strong> @Model.HealthCheck.Student.Gender</p>
+                                    }
+                                    else
+                                    {
+                                        <p class="text-muted">ID Học sinh: @Model.HealthCheck.StudentId</p>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-4">
+                                <h5 class="text-success">
+                                    <i class="fas fa-calendar-check me-2"></i>
+                                    Thông tin Kiểm tra
+                                </h5>
+                                <div class="ps-3">
+                                    <p><strong>Ngày kiểm tra:</strong> @Model.HealthCheck.Date.ToString("dd/MM/yyyy")</p>
+                                    <p><strong>Loại kiểm tra:</strong> 
+                                        <span class="badge bg-success fs-6">@Model.HealthCheck.CheckType</span>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr class="my-4">
+
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">
+                            <i class="fas fa-clipboard-check me-1"></i>
+                            Kết quả kiểm tra:
+                        </label>
+                        <div class="card bg-light">
+                            <div class="card-body">
+                                <p class="mb-0">@Model.HealthCheck.Results</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    @if (!string.IsNullOrEmpty(Model.HealthCheck.Notes))
+                    {
+                        <div class="mb-4">
+                            <label class="form-label fw-bold">
+                                <i class="fas fa-sticky-note me-1"></i>
+                                Ghi chú:
+                            </label>
+                            <div class="card bg-light">
+                                <div class="card-body">
+                                    <p class="mb-0">@Model.HealthCheck.Notes</p>
+                                </div>
+                            </div>
+                        </div>
+                    }
+
+                    <div class="d-flex justify-content-between">
+                        <a href="/Admin/HealthChecks/Index" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left me-2"></i>
+                            Quay lại danh sách
+                        </a>
+                        <div>
+                            <a href="/Admin/HealthChecks/Edit/@Model.HealthCheck.Id" class="btn btn-warning me-2">
+                                <i class="fas fa-edit me-2"></i>
+                                Chỉnh sửa
+                            </a>
+                            <a href="/Admin/HealthChecks/Delete/@Model.HealthCheck.Id" class="btn btn-danger">
+                                <i class="fas fa-trash me-2"></i>
+                                Xóa
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.card-header {
+    background: linear-gradient(45deg, #6f42c1, #e83e8c);
+    color: white;
+}
+.form-label i {
+    color: #6f42c1;
+}
+.badge {
+    font-size: 0.9em;
+}
+</style> 

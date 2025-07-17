@@ -1,0 +1,113 @@
+@page "{id:int}"
+@model SchoolMedicalManagement.Pages.Admin.HealthChecks.EditModel
+@{
+    ViewData["Title"] = "Chỉnh sửa Kiểm tra Sức khỏe";
+}
+
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        <i class="fas fa-edit me-2"></i>
+                        Chỉnh sửa Kiểm tra Sức khỏe #@Model.HealthCheckId
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label asp-for="HealthCheck.Date" class="form-label">
+                                        <i class="fas fa-calendar me-1"></i>
+                                        Ngày kiểm tra *
+                                    </label>
+                                    <input asp-for="HealthCheck.Date" type="date" class="form-control" required />
+                                    <span asp-validation-for="HealthCheck.Date" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label asp-for="HealthCheck.CheckType" class="form-label">
+                                        <i class="fas fa-stethoscope me-1"></i>
+                                        Loại kiểm tra *
+                                    </label>
+                                    <select asp-for="HealthCheck.CheckType" class="form-select" required>
+                                        <option value="">-- Chọn loại kiểm tra --</option>
+                                        <option value="Khám tổng quát">Khám tổng quát</option>
+                                        <option value="Đo chiều cao cân nặng">Đo chiều cao cân nặng</option>
+                                        <option value="Kiểm tra thị lực">Kiểm tra thị lực</option>
+                                        <option value="Kiểm tra răng miệng">Kiểm tra răng miệng</option>
+                                        <option value="Đo huyết áp">Đo huyết áp</option>
+                                        <option value="Xét nghiệm máu">Xét nghiệm máu</option>
+                                        <option value="Chụp X-quang">Chụp X-quang</option>
+                                        <option value="Kiểm tra tâm lý">Kiểm tra tâm lý</option>
+                                        <option value="Khác">Khác</option>
+                                    </select>
+                                    <span asp-validation-for="HealthCheck.CheckType" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="HealthCheck.Results" class="form-label">
+                                <i class="fas fa-clipboard-check me-1"></i>
+                                Kết quả kiểm tra *
+                            </label>
+                            <textarea asp-for="HealthCheck.Results" class="form-control" rows="4" 
+                                      placeholder="Nhập kết quả chi tiết của cuộc kiểm tra..." required></textarea>
+                            <span asp-validation-for="HealthCheck.Results" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="HealthCheck.Notes" class="form-label">
+                                <i class="fas fa-sticky-note me-1"></i>
+                                Ghi chú (tuỳ chọn)
+                            </label>
+                            <textarea asp-for="HealthCheck.Notes" class="form-control" rows="3" 
+                                      placeholder="Ghi chú thêm, khuyến nghị, lưu ý..."></textarea>
+                            <span asp-validation-for="HealthCheck.Notes" class="text-danger"></span>
+                        </div>
+
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle me-2"></i>
+                            <strong>Lưu ý:</strong> Học sinh không thể thay đổi sau khi tạo kiểm tra sức khỏe.
+                        </div>
+
+                        <div class="d-flex justify-content-between">
+                            <a href="/Admin/HealthChecks/Index" class="btn btn-secondary">
+                                <i class="fas fa-arrow-left me-2"></i>
+                                Quay lại
+                            </a>
+                            <button type="submit" class="btn btn-success">
+                                <i class="fas fa-save me-2"></i>
+                                Cập nhật
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.card-header {
+    background: linear-gradient(45deg, #ffc107, #fd7e14);
+    color: white;
+}
+.form-label i {
+    color: #ffc107;
+}
+.btn-success {
+    background: linear-gradient(45deg, #28a745, #20c997);
+    border: none;
+}
+</style>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+} 

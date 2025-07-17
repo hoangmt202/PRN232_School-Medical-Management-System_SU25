@@ -1,0 +1,165 @@
+@page
+@model SchoolMedicalManagement.Pages.Auth.SettingsModel
+@{
+    ViewData["Title"] = "Cài đặt tài khoản";
+}
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow-lg border-0 rounded-4">
+                <div class="card-header bg-dark text-white rounded-top-4">
+                    <h4 class="mb-0">
+                        <i class="fas fa-cog me-2"></i>
+                        Cài đặt tài khoản
+                    </h4>
+                </div>
+                <div class="card-body p-4">
+                    
+                    <!-- Messages -->
+                    @if (!string.IsNullOrEmpty(TempData["SuccessMessage"] as string))
+                    {
+                        <div class="alert alert-success alert-dismissible fade show">
+                            <i class="fas fa-check-circle me-2"></i>
+                            @TempData["SuccessMessage"]
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    }
+                    
+                    @if (!string.IsNullOrEmpty(TempData["ErrorMessage"] as string))
+                    {
+                        <div class="alert alert-danger alert-dismissible fade show">
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                            @TempData["ErrorMessage"]
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    }
+                    
+                    <!-- Account Settings -->
+                    <div class="mb-5">
+                        <h5 class="text-primary mb-3">
+                            <i class="fas fa-user-cog me-2"></i>
+                            Quản lý tài khoản
+                        </h5>
+                        <div class="list-group">
+                            <a href="/Auth/EditProfile" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                                <div>
+                                    <i class="fas fa-edit text-primary me-3"></i>
+                                    <strong>Chỉnh sửa thông tin cá nhân</strong>
+                                    <p class="mb-0 text-muted small">Cập nhật họ tên, email, số điện thoại, địa chỉ</p>
+                                </div>
+                                <i class="fas fa-chevron-right text-muted"></i>
+                            </a>
+                            
+                            <div class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    <i class="fas fa-key text-warning me-3"></i>
+                                    <strong>Đổi mật khẩu</strong>
+                                    <p class="mb-0 text-muted small">Thay đổi mật khẩu đăng nhập</p>
+                                </div>
+                                <button class="btn btn-outline-warning btn-sm" data-bs-toggle="modal" data-bs-target="#changePasswordModal">
+                                    Đổi mật khẩu
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Security Settings -->
+                    <div class="mb-5">
+                        <h5 class="text-success mb-3">
+                            <i class="fas fa-shield-alt me-2"></i>
+                            Bảo mật
+                        </h5>
+                        <div class="list-group">
+                            <div class="list-group-item">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <i class="fas fa-clock text-info me-3"></i>
+                                        <strong>Phiên đăng nhập</strong>
+                                        <p class="mb-0 text-muted small">Tự động đăng xuất khi không hoạt động</p>
+                                    </div>
+                                    <span class="badge bg-success">Đã bật</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- System Info -->
+                    <div class="mb-4">
+                        <h5 class="text-info mb-3">
+                            <i class="fas fa-info-circle me-2"></i>
+                            Thông tin hệ thống
+                        </h5>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <div class="card bg-light">
+                                    <div class="card-body text-center">
+                                        <i class="fas fa-user-tag text-primary fa-2x mb-2"></i>
+                                        <h6>Vai trò</h6>
+                                        <span class="badge bg-primary">@HttpContext.Session.GetString("UserRole")</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card bg-light">
+                                    <div class="card-body text-center">
+                                        <i class="fas fa-clock text-success fa-2x mb-2"></i>
+                                        <h6>Đăng nhập lần cuối</h6>
+                                        <small class="text-muted">@DateTime.Now.ToString("dd/MM/yyyy HH:mm")</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="text-center">
+                        <a href="/Auth/Profile" class="btn btn-outline-primary me-2">
+                            <i class="fas fa-arrow-left me-2"></i>
+                            Quay lại Profile
+                        </a>
+                        <a href="/Auth/Logout" class="btn btn-outline-danger">
+                            <i class="fas fa-sign-out-alt me-2"></i>
+                            Đăng xuất
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Change Password Modal -->
+<div class="modal fade" id="changePasswordModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fas fa-key me-2"></i>
+                    Đổi mật khẩu
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form method="post">
+                    <div class="mb-3">
+                        <label class="form-label">Mật khẩu hiện tại</label>
+                        <input type="password" name="CurrentPassword" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Mật khẩu mới</label>
+                        <input type="password" name="NewPassword" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Xác nhận mật khẩu mới</label>
+                        <input type="password" name="ConfirmPassword" class="form-control" required>
+                    </div>
+                    <div class="text-end">
+                        <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="modal">Hủy</button>
+                        <button type="submit" class="btn btn-primary">Đổi mật khẩu</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div> 

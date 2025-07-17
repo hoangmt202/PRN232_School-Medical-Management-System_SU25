@@ -103,8 +103,30 @@
                                     </li>
                                 }
 
-                                <li><a class="dropdown-item" asp-page="/HealthChecks/Index"><i class="fas fa-calendar-check me-2"></i>Health Checks</a></li>
-                                <li><a class="dropdown-item" asp-page="/IncidentReports/Index"><i class="fas fa-exclamation-triangle me-2"></i>Incident Reports</a></li>
+                                @if (Context.Session.GetString("UserRole") == "Nurse" || Context.Session.GetString("UserRole") == "Admin")
+                                {
+                                    <li>
+                                        <a class="dropdown-item" href="/Admin/HealthChecks/Index">
+                                            <i class="fas fa-calendar-check me-2"></i>Health Checks Management
+                                        </a>
+                                    </li>
+                                }
+                                else
+                                {
+                                    <li><a class="dropdown-item" asp-page="/HealthChecks/Index"><i class="fas fa-calendar-check me-2"></i>Health Checks</a></li>
+                                }
+                                @if (Context.Session.GetString("UserRole") == "Nurse" || Context.Session.GetString("UserRole") == "Admin")
+                                {
+                                    <li>
+                                        <a class="dropdown-item" href="/Admin/IncidentReports/Index">
+                                            <i class="fas fa-exclamation-triangle me-2"></i>Incident Reports Management
+                                        </a>
+                                    </li>
+                                }
+                                else
+                                {
+                                    <li><a class="dropdown-item" asp-page="/IncidentReports/Index"><i class="fas fa-exclamation-triangle me-2"></i>Incident Reports</a></li>
+                                }
                             </ul>
                         </li>
 
@@ -167,16 +189,22 @@
                                 {
                                     @* Remove the My Children button for parents from the navigation. *@
                                 }
-                                <li><a class="dropdown-item" href="#">
+                                <li><a class="dropdown-item" href="/Auth/Settings">
                                     <i class="fas fa-cog me-2"></i>Settings
                                 </a></li>
                                 <li><hr class="dropdown-divider"></li>
-                                <li><a class="dropdown-item" href="/Auth/Login">
-                                    <i class="fas fa-sign-in-alt me-2"></i>Login
-                                </a></li>
-                                <li><a class="dropdown-item" href="#">
-                                    <i class="fas fa-sign-out-alt me-2"></i>Logout
-                                </a></li>
+                                @if (string.IsNullOrEmpty(userRole))
+                                {
+                                    <li><a class="dropdown-item" href="/Auth/Login">
+                                        <i class="fas fa-sign-in-alt me-2"></i>Login
+                                    </a></li>
+                                }
+                                else
+                                {
+                                    <li><a class="dropdown-item" href="/Auth/Logout">
+                                        <i class="fas fa-sign-out-alt me-2"></i>Logout
+                                    </a></li>
+                                }
                             </ul>
                         </li>
                     </ul>
