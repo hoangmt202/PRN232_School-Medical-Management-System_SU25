@@ -18,14 +18,47 @@ namespace BusinessLogic.Services
             _unitOfWorks = unitOfWorks;
         }
 
-        public async Task<IEnumerable<Student>> GetAllStudentsAsync()
+        public async Task<List<StudentResponseDTO>> GetAllStudentsAsync()
         {
-            return await _studentRepository.GetAllAsync("Parent");
+            var students = await _studentRepository.GetAllAsync("Parent");
+            return students.Select(s => new StudentResponseDTO
+            {
+                Id = s.Id,
+                FullName = s.FullName,
+                DateOfBirth = s.DateOfBirth,
+                Gender = s.Gender,
+                Class = s.Class,
+                ParentId = s.ParentId,
+                Parent = s.Parent,
+                MedicalRecord = s.MedicalRecord,
+                Vaccinations = s.Vaccinations,
+                VaccinationNotices = s.VaccinationNotices,
+                Medications = s.Medications,
+                IncidentReports = s.IncidentReports,
+                HealthChecks = s.HealthChecks
+            }).ToList();
         }
 
-        public async Task<Student> GetStudentByIdAsync(int id)
+        public async Task<StudentResponseDTO> GetStudentByIdAsync(int id)
         {
-            return await _studentRepository.GetAsync(s => s.Id == id, "Parent");
+            var s = await _studentRepository.GetAsync(st => st.Id == id, "Parent");
+            if (s == null) return null;
+            return new StudentResponseDTO
+            {
+                Id = s.Id,
+                FullName = s.FullName,
+                DateOfBirth = s.DateOfBirth,
+                Gender = s.Gender,
+                Class = s.Class,
+                ParentId = s.ParentId,
+                Parent = s.Parent,
+                MedicalRecord = s.MedicalRecord,
+                Vaccinations = s.Vaccinations,
+                VaccinationNotices = s.VaccinationNotices,
+                Medications = s.Medications,
+                IncidentReports = s.IncidentReports,
+                HealthChecks = s.HealthChecks
+            };
         }
 
         public async Task AddStudentAsync(Student student)
@@ -46,16 +79,30 @@ namespace BusinessLogic.Services
                 _studentRepository.Delete(student);
             }
         }
-        public async Task<IEnumerable<Student>> GetStudentsByParentUserIdAsync(int parentUserId)
+        public async Task<List<StudentResponseDTO>> GetStudentsByParentUserIdAsync(int parentUserId)
         {
             var parent = await _parentRepository.GetAsync(p => p.Id == parentUserId);
             if (parent == null)
             {
-                return Enumerable.Empty<Student>();
+                return new List<StudentResponseDTO>();
             }
-
-            // Step 2: Get students by parent ID
-            return await _studentRepository.FindAsync(s => s.ParentId == parent.Id, "Parent");
+            var students = await _studentRepository.FindAsync(s => s.ParentId == parent.Id, "Parent");
+            return students.Select(s => new StudentResponseDTO
+            {
+                Id = s.Id,
+                FullName = s.FullName,
+                DateOfBirth = s.DateOfBirth,
+                Gender = s.Gender,
+                Class = s.Class,
+                ParentId = s.ParentId,
+                Parent = s.Parent,
+                MedicalRecord = s.MedicalRecord,
+                Vaccinations = s.Vaccinations,
+                VaccinationNotices = s.VaccinationNotices,
+                Medications = s.Medications,
+                IncidentReports = s.IncidentReports,
+                HealthChecks = s.HealthChecks
+            }).ToList();
         }
         public async Task<StudentResponseDTO> CreateStudent(StudentRequestDTO studentDTO)
         {

@@ -10,12 +10,12 @@ namespace BusinessLogic.Services
 {
     public interface IStudentService
     {
-        Task<IEnumerable<Student>> GetAllStudentsAsync();
-        Task<Student> GetStudentByIdAsync(int id);
+        Task<List<StudentResponseDTO>> GetAllStudentsAsync();
+        Task<StudentResponseDTO> GetStudentByIdAsync(int id);
         Task AddStudentAsync(Student student);
         Task UpdateStudentAsync(Student student);
         Task DeleteStudentAsync(int id);
-        Task<IEnumerable<Student>> GetStudentsByParentUserIdAsync(int parentUserId);
+        Task<List<StudentResponseDTO>> GetStudentsByParentUserIdAsync(int parentUserId);
         Task<StudentResponseDTO> GetStudentById(int id);
         Task<List<StudentResponseDTO>> GetAll();
         Task<StudentResponseDTO> CreateStudent(StudentRequestDTO studentDTO);

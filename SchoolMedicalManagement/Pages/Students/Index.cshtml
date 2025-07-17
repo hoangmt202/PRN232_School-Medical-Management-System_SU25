@@ -4,6 +4,13 @@
     ViewData["Title"] = "Students";
 }
 
+@if (User.IsInRole("SchoolNurse"))
+{
+    <style>
+        .btn, .action-buttons { display: none !important; }
+    </style>
+}
+
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-12">

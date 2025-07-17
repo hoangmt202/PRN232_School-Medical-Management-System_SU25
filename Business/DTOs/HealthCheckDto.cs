@@ -17,7 +17,7 @@ namespace BusinessLogic.DTOs
         public string? Notes { get; set; }
 
         // Navigation properties
-        public Student? Student { get; set; }
+        public StudentResponseDTO? Student { get; set; }
     }
 
     public class CreateHealthCheckDto

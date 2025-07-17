@@ -16,12 +16,17 @@ namespace SchoolMedicalManagement.Pages.IncidentReports
 
         public List<IncidentReportDto> IncidentReports { get; set; } = new List<IncidentReportDto>();
 
-        public async Task OnGetAsync()
+        public async Task OnGetAsync(int? studentId)
         {
             try
             {
                 var client = _httpClientFactory.CreateClient();
-                var response = await client.GetAsync("http://localhost:5234/api/IncidentReport");
+                string url = "http://localhost:5234/api/IncidentReport";
+                if (studentId.HasValue)
+                {
+                    url = $"http://localhost:5234/api/IncidentReport/student/{studentId.Value}";
+                }
+                var response = await client.GetAsync(url);
                 
                 if (response.IsSuccessStatusCode)
                 {

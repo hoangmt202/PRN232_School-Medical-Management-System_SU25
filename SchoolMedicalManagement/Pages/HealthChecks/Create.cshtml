@@ -19,9 +19,17 @@
                         
                         <div class="mb-3">
                             <label asp-for="HealthCheck.StudentId" class="form-label">Student</label>
-                            <select asp-for="HealthCheck.StudentId" class="form-select" asp-items="@Model.StudentOptions">
-                                <option value="">-- Select Student --</option>
-                            </select>
+                            @if (Model.HealthCheck.StudentId != 0)
+                            {
+                                <input type="hidden" asp-for="HealthCheck.StudentId" />
+                                <input class="form-control" value="@(Model.StudentOptions.FirstOrDefault(s => s.Value == Model.HealthCheck.StudentId.ToString())?.Text ?? "")" disabled />
+                            }
+                            else
+                            {
+                                <select asp-for="HealthCheck.StudentId" class="form-select" asp-items="@Model.StudentOptions">
+                                    <option value="">-- Select Student --</option>
+                                </select>
+                            }
                             <span asp-validation-for="HealthCheck.StudentId" class="text-danger"></span>
                         </div>
 

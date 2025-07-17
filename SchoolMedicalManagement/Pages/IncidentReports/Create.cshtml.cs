@@ -24,8 +24,29 @@ namespace SchoolMedicalManagement.Pages.IncidentReports
         public SelectList StudentOptions { get; set; } = new SelectList(new List<SelectListItem>());
         public SelectList NurseOptions { get; set; } = new SelectList(new List<SelectListItem>());
 
-        public async Task OnGetAsync()
+        public async Task OnGetAsync(int? studentId)
         {
+            if (studentId.HasValue)
+            {
+                IncidentReport.StudentId = studentId.Value;
+            }
+
+            // Get current userId
+            var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            if (!string.IsNullOrEmpty(userId) && User.IsInRole("Nurse"))
+            {
+                var client = _httpClientFactory.CreateClient();
+                var response = await client.GetAsync($"http://localhost:5234/api/schoolnurse/user/{userId}");
+                if (response.IsSuccessStatusCode)
+                {
+                    var content = await response.Content.ReadAsStringAsync();
+                    var nurse = JsonSerializer.Deserialize<SchoolNurseResponseDTO>(content, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                    if (nurse != null)
+                    {
+                        IncidentReport.NurseId = nurse.Id;
+                    }
+                }
+            }
             await LoadDropdownData();
         }
 

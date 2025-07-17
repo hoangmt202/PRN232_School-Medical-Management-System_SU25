@@ -64,6 +64,24 @@
                             <a asp-page="./Delete" asp-route-id="@Model.Student.Id" class="btn btn-danger">
                                 <i class="fas fa-trash me-1"></i>Delete
                             </a>
+                            @if (User.IsInRole("Nurse"))
+                            {
+                                <a asp-page="/IncidentReports/Create" asp-route-studentId="@Model.Student.Id" class="btn btn-warning ms-2">
+                                    <i class="fas fa-exclamation-triangle me-1"></i>Create Incident Report
+                                </a>
+                                <a asp-page="/HealthChecks/Create" asp-route-studentId="@Model.Student.Id" class="btn btn-info ms-2">
+                                    <i class="fas fa-notes-medical me-1"></i>Create Health Check
+                                </a>
+                            }
+                            @if (User.IsInRole("Parent"))
+                            {
+                                <a asp-page="/IncidentReports/Index" asp-route-studentId="@Model.Student.Id" class="btn btn-outline-primary ms-2">
+                                    <i class="fas fa-exclamation-triangle me-1"></i>View Incident Reports
+                                </a>
+                                <a asp-page="/MedicalRecords/Index" asp-route-studentId="@Model.Student.Id" class="btn btn-outline-success ms-2">
+                                    <i class="fas fa-file-medical me-1"></i>View Medical Records
+                                </a>
+                            }
                         </div>
                     </div>
                 </div>

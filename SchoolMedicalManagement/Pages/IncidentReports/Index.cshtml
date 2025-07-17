@@ -4,6 +4,13 @@
     ViewData["Title"] = "Incident Report Management";
 }
 
+@if (User.IsInRole("Nurse"))
+{
+    <style>
+        .btn-create { display: none !important; }
+    </style>
+}
+
 <div class="container-fluid">
     <div class="row">
         <div class="col-12">

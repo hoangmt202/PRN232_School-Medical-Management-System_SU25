@@ -96,7 +96,20 @@ namespace BusinessLogic.Services
                 CheckType = healthCheck.CheckType,
                 Results = healthCheck.Results,
                 Notes = healthCheck.Notes,
-                Student = healthCheck.Student
+                Student = healthCheck.Student != null ? MapStudentToDto(healthCheck.Student) : null,
+            };
+        }
+        private static StudentResponseDTO MapStudentToDto(Student student)
+        {
+            return new StudentResponseDTO
+            {
+                Id = student.Id,
+                FullName = student.FullName,
+                DateOfBirth = student.DateOfBirth,
+                Gender = student.Gender,
+                Class = student.Class,
+                ParentId = student.ParentId,
+                // Map other properties as needed
             };
         }
     }

@@ -30,9 +30,17 @@
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label asp-for="IncidentReport.NurseId" class="form-label">Nurse</label>
-                                    <select asp-for="IncidentReport.NurseId" class="form-select" asp-items="@Model.NurseOptions">
-                                        <option value="">-- Select Nurse --</option>
-                                    </select>
+                                    @if (User.IsInRole("Nurse") && Model.IncidentReport.NurseId != 0)
+                                    {
+                                        <input type="hidden" asp-for="IncidentReport.NurseId" />
+                                        <input class="form-control" value="@(Model.NurseOptions.FirstOrDefault(n => n.Value == Model.IncidentReport.NurseId.ToString())?.Text ?? "")" disabled />
+                                    }
+                                    else
+                                    {
+                                        <select asp-for="IncidentReport.NurseId" class="form-select" asp-items="@Model.NurseOptions">
+                                            <option value="">-- Select Nurse --</option>
+                                        </select>
+                                    }
                                     <span asp-validation-for="IncidentReport.NurseId" class="text-danger"></span>
                                 </div>
                             </div>

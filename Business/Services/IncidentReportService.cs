@@ -104,8 +104,34 @@ namespace BusinessLogic.Services
                 Type = incidentReport.Type,
                 Description = incidentReport.Description,
                 ActionTaken = incidentReport.ActionTaken,
-                Student = incidentReport.Student,
-                Nurse = incidentReport.Nurse
+                Student = incidentReport.Student != null ? MapStudentToDto(incidentReport.Student) : null,
+                Nurse = incidentReport.Nurse != null ? MapNurseToDto(incidentReport.Nurse) : null
+            };
+        }
+        // Add these mapping helpers:
+        private static StudentResponseDTO MapStudentToDto(Student student)
+        {
+            return new StudentResponseDTO
+            {
+                Id = student.Id,
+                FullName = student.FullName,
+                DateOfBirth = student.DateOfBirth,
+                Gender = student.Gender,
+                Class = student.Class,
+                ParentId = student.ParentId,
+                // Map other properties as needed
+            };
+        }
+
+        private static SchoolNurseResponseDTO MapNurseToDto(SchoolNurse nurse)
+        {
+            return new SchoolNurseResponseDTO
+            {
+                Id = nurse.Id,
+                FullName = nurse.FullName,
+                PhoneNumber = nurse.PhoneNumber,
+                UserId = nurse.UserId,
+                // Map other properties as needed
             };
         }
     }

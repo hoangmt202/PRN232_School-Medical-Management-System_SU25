@@ -23,8 +23,12 @@ namespace SchoolMedicalManagement.Pages.HealthChecks
 
         public SelectList StudentOptions { get; set; } = new SelectList(new List<SelectListItem>());
 
-        public async Task OnGetAsync()
+        public async Task OnGetAsync(int? studentId)
         {
+            if (studentId.HasValue)
+            {
+                HealthCheck.StudentId = studentId.Value;
+            }
             await LoadDropdownData();
         }
 
