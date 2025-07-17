@@ -62,6 +62,7 @@ builder.Services.AddScoped<IVaccinationParentService, VaccinationParentService>(
 builder.Services.AddScoped<IReportService, ReportService>();
 builder.Services.AddScoped<IIncidentReportService, IncidentReportService>();
 builder.Services.AddScoped<IHealthCheckService, HealthCheckService>();
+builder.Services.AddScoped<IMedicalRecordService, MedicalRecordService>();
 builder.Services.AddDbContext<SchoolMedicalDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
 );
@@ -88,7 +89,7 @@ builder.Services
 builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("AdminOnly", policy => policy.RequireRole("Admin"));
-    options.AddPolicy("MedicalStaff", policy => policy.RequireRole("Admin", "SchoolNurse", "Manager"));
+    options.AddPolicy("MedicalStaff", policy => policy.RequireRole("Admin", "Nurse"));
     options.AddPolicy("ParentAccess", policy => policy.RequireRole("Admin", "Parent"));
 });
 

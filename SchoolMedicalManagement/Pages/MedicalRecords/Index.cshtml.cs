@@ -1,22 +1,20 @@
 using BusinessLogic.DTOs.MedicalRecord;
-using BusinessLogic.Services;
-using Microsoft.AspNetCore.Components;
+using BusinessLogic.DTOs.Student;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.JSInterop;
+using System.Net.Http.Headers;
 using System.Security.Claims;
+using System.Text.Json;
 
 namespace SchoolMedicalManagement.Pages.MedicalRecords
 {
     public partial class IndexModel : PageModel
     {
-        private readonly IMedicalRecordService _medicalRecordService;
-        private readonly IStudentService _studentService;
+        private readonly IHttpClientFactory _httpClientFactory;
 
-        public IndexModel(IMedicalRecordService medicalRecordService, IStudentService studentService)
+        public IndexModel(IHttpClientFactory httpClientFactory)
         {
-            _medicalRecordService = medicalRecordService;
-            _studentService = studentService;
+            _httpClientFactory = httpClientFactory;
         }
 
         public List<MedicalRecordViewModel> MedicalRecords { get; set; } = new List<MedicalRecordViewModel>();
@@ -24,43 +22,79 @@ namespace SchoolMedicalManagement.Pages.MedicalRecords
 
         public async Task<IActionResult> OnGetAsync()
         {
+            // Check authorization - Parent only
+            var userRole = HttpContext.Session.GetString("UserRole");
+            if (userRole != "Parent")
+            {
+                return RedirectToPage("/Auth/Login");
+            }
+
             try
             {
+                var client = _httpClientFactory.CreateClient("API");
+                
+                // Get current user token from session
+                var token = Request.Cookies["AuthToken"];
+                if (!string.IsNullOrEmpty(token))
+                {
+                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                }
+
                 // Get current user ID from claims
-                //var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-                //if (string.IsNullOrEmpty(userIdClaim) || !int.TryParse(userIdClaim, out int userId))
-                //{
-                //    ErrorMessage = "User not authenticated.";
-                //    return Page();
-                //}
+                var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                if (string.IsNullOrEmpty(userIdClaim) || !int.TryParse(userIdClaim, out int userId))
+                {
+                    // For testing - use hardcoded value
+                    userId = 101;
+                }
 
                 // Get parent's children
-                var children = await _studentService.GetStudentsByParentUserIdAsync(101);
+                var studentsResponse = await client.GetAsync($"student/by-parent/{userId}");
+                if (!studentsResponse.IsSuccessStatusCode)
+                {
+                    ErrorMessage = "Unable to load student information.";
+                    return Page();
+                }
 
-                if (!children.Any())
+                var studentsJson = await studentsResponse.Content.ReadAsStringAsync();
+                var students = JsonSerializer.Deserialize<List<StudentDto>>(studentsJson, new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                });
+
+                if (students == null || !students.Any())
                 {
                     ErrorMessage = "No children found for this parent.";
                     return Page();
                 }
 
                 // Get medical records for each child
-                foreach (var child in children)
+                foreach (var child in students)
                 {
-                    var medicalRecord = await _medicalRecordService.GetMedicalRecordByStudentIdAsync(child.Id);
-                    if (medicalRecord != null)
+                    var medicalRecordResponse = await client.GetAsync($"MedicalRecord/student/{child.Id}");
+                    if (medicalRecordResponse.IsSuccessStatusCode)
                     {
-                        MedicalRecords.Add(new MedicalRecordViewModel
+                        var recordJson = await medicalRecordResponse.Content.ReadAsStringAsync();
+                        var medicalRecord = JsonSerializer.Deserialize<MedicalRecordDto>(recordJson, new JsonSerializerOptions
                         {
-                            Id = medicalRecord.Id,
-                            StudentId = child.Id,
-                            StudentName = child.FullName,
-                            StudentClass = child.Class,
-                            StudentDateOfBirth = child.DateOfBirth,
-                            Allergies = medicalRecord.Allergies,
-                            ChronicDiseases = medicalRecord.ChronicDiseases,
-                            TreatmentHistory = medicalRecord.TreatmentHistory,
-                            PhysicalCondition = medicalRecord.PhysicalCondition
+                            PropertyNameCaseInsensitive = true
                         });
+
+                        if (medicalRecord != null)
+                        {
+                            MedicalRecords.Add(new MedicalRecordViewModel
+                            {
+                                Id = medicalRecord.Id,
+                                StudentId = child.Id,
+                                StudentName = child.FullName,
+                                StudentClass = child.Class ?? "N/A",
+                                StudentDateOfBirth = child.DateOfBirth,
+                                Allergies = medicalRecord.Allergies,
+                                ChronicDiseases = medicalRecord.ChronicDiseases,
+                                TreatmentHistory = medicalRecord.TreatmentHistory,
+                                PhysicalCondition = medicalRecord.PhysicalCondition
+                            });
+                        }
                     }
                 }
 

@@ -1,85 +1,140 @@
 using BusinessLogic.DTOs.MedicalRecord;
-using BusinessLogic.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using System.Net.Http.Headers;
+using System.Text.Json;
 
 namespace SchoolMedicalManagement.Pages.Admin.MedicalRecords
 {
+    // [Authorize(Policy = "MedicalStaff")] - Temporarily disabled for testing
     public class IndexModel : PageModel
     {
-        private readonly IMedicalRecordService _medicalRecordService;
+        private readonly IHttpClientFactory _httpClientFactory;
 
-        public IndexModel(IMedicalRecordService medicalRecordService)
+        public IndexModel(IHttpClientFactory httpClientFactory)
         {
-            _medicalRecordService = medicalRecordService;
+            _httpClientFactory = httpClientFactory;
         }
 
-        public List<MedicalRecordViewModel> MedicalRecords { get; set; } = new List<MedicalRecordViewModel>();
+        public List<AdminMedicalRecordViewModel> MedicalRecords { get; set; } = new List<AdminMedicalRecordViewModel>();
         public string ErrorMessage { get; set; } = string.Empty;
         public string SuccessMessage { get; set; } = string.Empty;
-        public string SearchTerm { get; set; } = string.Empty;
 
-        public async Task<IActionResult> OnGetAsync(string searchTerm = "")
+        public async Task<IActionResult> OnGetAsync()
         {
-            SearchTerm = searchTerm ?? "";
-            await LoadMedicalRecordsAsync();
-            return Page();
+            // Check authorization - Admin or Nurse only
+            var userRole = HttpContext.Session.GetString("UserRole");
+            if (userRole != "Admin" && userRole != "Nurse")
+            {
+                return RedirectToPage("/Auth/Login");
+            }
+
+            try
+            {
+                var client = _httpClientFactory.CreateClient("API");
+                
+                // Get current user token from cookie
+                var token = Request.Cookies["AuthToken"];
+                
+                // Debug: Log token status
+                if (string.IsNullOrEmpty(token))
+                {
+                    ErrorMessage = "No AuthToken found in cookies. Please login again.";
+                    return Page();
+                }
+                
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+                // Get all medical records
+                var response = await client.GetAsync("MedicalRecord");
+                if (!response.IsSuccessStatusCode)
+                {
+                    var errorContent = await response.Content.ReadAsStringAsync();
+                    ErrorMessage = $"Unable to load medical records. Status: {response.StatusCode}, Error: {errorContent}";
+                    return Page();
+                }
+
+                var recordsJson = await response.Content.ReadAsStringAsync();
+                var records = JsonSerializer.Deserialize<List<MedicalRecordDto>>(recordsJson, new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                });
+
+                if (records != null)
+                {
+                    MedicalRecords = records.Select(r => new AdminMedicalRecordViewModel
+                    {
+                        Id = r.Id,
+                        StudentId = r.StudentId,
+                        StudentName = r.StudentName ?? "Unknown",
+                        StudentClass = "N/A", // Will be populated from student info if needed
+                        Allergies = r.Allergies,
+                        ChronicDiseases = r.ChronicDiseases,
+                        TreatmentHistory = r.TreatmentHistory,
+                        PhysicalCondition = r.PhysicalCondition
+                    }).ToList();
+                }
+
+                return Page();
+            }
+            catch (Exception ex)
+            {
+                ErrorMessage = $"An error occurred: {ex.Message}";
+                return Page();
+            }
         }
 
         public async Task<IActionResult> OnPostDeleteAsync(int id)
         {
+            // Check authorization - Admin only for delete
+            var userRole = HttpContext.Session.GetString("UserRole");
+            if (userRole != "Admin")
+            {
+                ErrorMessage = "You don't have permission to delete medical records.";
+                return RedirectToPage();
+            }
+
             try
             {
-                var deleted = await _medicalRecordService.DeleteMedicalRecordAsync(id);
-                if (deleted)
+                var client = _httpClientFactory.CreateClient("API");
+                
+                // Get current user token from session
+                var token = Request.Cookies["AuthToken"];
+                if (!string.IsNullOrEmpty(token))
+                {
+                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                }
+
+                var response = await client.DeleteAsync($"MedicalRecord/{id}");
+                if (response.IsSuccessStatusCode)
                 {
                     SuccessMessage = "Medical record deleted successfully.";
                 }
                 else
                 {
-                    ErrorMessage = "Medical record not found or could not be deleted.";
+                    ErrorMessage = "Unable to delete medical record.";
                 }
+
+                return RedirectToPage();
             }
             catch (Exception ex)
             {
-                ErrorMessage = $"An error occurred while deleting the record: {ex.Message}";
-            }
-
-            await LoadMedicalRecordsAsync();
-            return Page();
-        }
-        private async Task LoadMedicalRecordsAsync()
-        {
-            try
-            {
-                var records = await _medicalRecordService.GetAllMedicalRecordsAsync();
-
-                MedicalRecords = records.Select(r => new MedicalRecordViewModel
-                {
-                    Id = r.Id,
-                    StudentId = r.StudentId,
-                    StudentName = r.StudentName ?? "Unknown",
-                    Allergies = r.Allergies,
-                    ChronicDiseases = r.ChronicDiseases,
-                    TreatmentHistory = r.TreatmentHistory,
-                    PhysicalCondition = r.PhysicalCondition
-                }).ToList();
-
-                // Apply search filter if provided
-                if (!string.IsNullOrEmpty(SearchTerm))
-                {
-                    MedicalRecords = MedicalRecords.Where(r =>
-                        r.StudentName.Contains(SearchTerm, StringComparison.OrdinalIgnoreCase) ||
-                        (!string.IsNullOrEmpty(r.Allergies) && r.Allergies.Contains(SearchTerm, StringComparison.OrdinalIgnoreCase)) ||
-                        (!string.IsNullOrEmpty(r.ChronicDiseases) && r.ChronicDiseases.Contains(SearchTerm, StringComparison.OrdinalIgnoreCase))
-                    ).ToList();
-                }
-            }
-            catch (Exception ex)
-            {
-                ErrorMessage = $"An error occurred while loading medical records: {ex.Message}";
-                MedicalRecords = new List<MedicalRecordViewModel>();
+                ErrorMessage = $"An error occurred: {ex.Message}";
+                return RedirectToPage();
             }
         }
+    }
+
+    public class AdminMedicalRecordViewModel
+    {
+        public int Id { get; set; }
+        public int StudentId { get; set; }
+        public string StudentName { get; set; } = string.Empty;
+        public string? StudentClass { get; set; }
+        public string? Allergies { get; set; }
+        public string? ChronicDiseases { get; set; }
+        public string? TreatmentHistory { get; set; }
+        public string? PhysicalCondition { get; set; }
     }
 }

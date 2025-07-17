@@ -1,17 +1,20 @@
 using BusinessLogic.DTOs.MedicalRecord;
-using BusinessLogic.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using System.Net.Http.Headers;
+using System.Text;
+using System.Text.Json;
 
 namespace SchoolMedicalManagement.Pages.MedicalRecords
 {
+    // No authorization needed - already checking in controller logic
     public class EditModel : PageModel
     {
-        private readonly IMedicalRecordService _medicalRecordService;
+        private readonly IHttpClientFactory _httpClientFactory;
 
-        public EditModel(IMedicalRecordService medicalRecordService)
+        public EditModel(IHttpClientFactory httpClientFactory)
         {
-            _medicalRecordService = medicalRecordService;
+            _httpClientFactory = httpClientFactory;
         }
 
         [BindProperty]
@@ -22,9 +25,41 @@ namespace SchoolMedicalManagement.Pages.MedicalRecords
 
         public async Task<IActionResult> OnGetAsync(int id)
         {
+            // Check authorization - Parent or Medical Staff only
+            var userRole = HttpContext.Session.GetString("UserRole");
+            if (userRole != "Parent" && userRole != "Admin" && userRole != "Manager" && userRole != "SchoolNurse")
+            {
+                return RedirectToPage("/Auth/Login");
+            }
+
             try
             {
-                var record = await _medicalRecordService.GetMedicalRecordByIdAsync(id);
+                var client = _httpClientFactory.CreateClient("API");
+                
+                // Get current user token from cookie
+                var token = Request.Cookies["AuthToken"];
+                if (!string.IsNullOrEmpty(token))
+                {
+                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                }
+
+                var response = await client.GetAsync($"MedicalRecord/{id}");
+                if (!response.IsSuccessStatusCode)
+                {
+                    if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+                    {
+                        return NotFound();
+                    }
+                    ErrorMessage = "Unable to load medical record.";
+                    return Page();
+                }
+
+                var recordJson = await response.Content.ReadAsStringAsync();
+                var record = JsonSerializer.Deserialize<MedicalRecordDto>(recordJson, new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                });
+
                 if (record == null)
                 {
                     return NotFound();
@@ -52,6 +87,13 @@ namespace SchoolMedicalManagement.Pages.MedicalRecords
 
         public async Task<IActionResult> OnPostAsync()
         {
+            // Check authorization - Parent or Medical Staff only
+            var userRole = HttpContext.Session.GetString("UserRole");
+            if (userRole != "Parent" && userRole != "Admin" && userRole != "Manager" && userRole != "SchoolNurse")
+            {
+                return RedirectToPage("/Auth/Login");
+            }
+
             if (!ModelState.IsValid)
             {
                 return Page();
@@ -59,6 +101,15 @@ namespace SchoolMedicalManagement.Pages.MedicalRecords
 
             try
             {
+                var client = _httpClientFactory.CreateClient("API");
+                
+                // Get current user token from cookie
+                var token = Request.Cookies["AuthToken"];
+                if (!string.IsNullOrEmpty(token))
+                {
+                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                }
+
                 var updateDto = new UpdateMedicalRecordDto
                 {
                     Allergies = MedicalRecord.Allergies,
@@ -67,15 +118,23 @@ namespace SchoolMedicalManagement.Pages.MedicalRecords
                     PhysicalCondition = MedicalRecord.PhysicalCondition
                 };
 
-                var updatedRecord = await _medicalRecordService.UpdateMedicalRecordAsync(MedicalRecord.Id, updateDto);
-                if (updatedRecord == null)
+                var jsonContent = JsonSerializer.Serialize(updateDto);
+                var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+
+                var response = await client.PutAsync($"MedicalRecord/{MedicalRecord.Id}", content);
+                if (!response.IsSuccessStatusCode)
                 {
-                    ErrorMessage = "Medical record not found.";
+                    if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+                    {
+                        ErrorMessage = "Medical record not found.";
+                        return Page();
+                    }
+                    ErrorMessage = "Unable to update medical record.";
                     return Page();
                 }
 
                 SuccessMessage = "Medical record updated successfully!";
-                return RedirectToPage("/Parent/MedicalRecord");
+                return RedirectToPage("/MedicalRecords/Index");
             }
             catch (Exception ex)
             {

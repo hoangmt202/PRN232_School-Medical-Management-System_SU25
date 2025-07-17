@@ -42,7 +42,7 @@
                                     <li><a class="dropdown-item" asp-page="/Students/Index"><i class="fas fa-user-graduate me-2"></i>Students</a></li>
                                     <li><a class="dropdown-item" asp-page="/SchoolNurses/Index"><i class="fas fa-user-nurse me-2"></i>School Nurses</a></li>
                                     <li><hr class="dropdown-divider"></li>
-                                    <li><a class="dropdown-item" href="#"><i class="fas fa-cog me-2"></i>Administration</a></li>
+                                    <li><a class="dropdown-item" asp-page="/Admin/Dashboard"><i class="fas fa-cog me-2"></i>Administration</a></li>
                                 </ul>
                             </li>
                         }
@@ -73,31 +73,43 @@
                                 <i class="fas fa-notes-medical me-1"></i>Health Records
                             </a>
                             <ul class="dropdown-menu" aria-labelledby="healthDropdown">
-                                <li>
-                                    <a class="dropdown-item" href="#">
-                                        <i class="fas fa-file-medical me-2"></i>Medical Records
-                                    </a>
-                                </li>
-
                                 @if (Context.Session.GetString("UserRole") == "Parent")
                                 {
+                                    <li>
+                                        <a class="dropdown-item" href="/parent/medical-record">
+                                            <i class="fas fa-file-medical me-2"></i>My Children's Medical Records
+                                        </a>
+                                    </li>
                                     <li><a class="dropdown-item" asp-page="/Parents/Vaccination/Consent"><i class="fas fa-syringe me-2"></i>Vaccination Consent</a></li>
                                     <li><a class="dropdown-item" asp-page="/Parents/Vaccination/History"><i class="fas fa-history me-2"></i>Vaccination History</a></li>
                                     <li><a class="dropdown-item" asp-page="/Parents/Vaccination/AddExternal"><i class="fas fa-plus-circle me-2"></i>Add External Vaccination</a></li>
                                 }
-                                else if (Context.Session.GetString("UserRole") == "SchoolNurse")
+                                else if (Context.Session.GetString("UserRole") == "Nurse" || Context.Session.GetString("UserRole") == "Admin")
                                 {
+                                    <li>
+                                        <a class="dropdown-item" href="/admin/medical-records">
+                                            <i class="fas fa-file-medical me-2"></i>Medical Records Management
+                                        </a>
+                                    </li>
                                     <li><a class="dropdown-item" asp-page="/Nurses/VaccinationPlans/Index"><i class="fas fa-clipboard-list me-2"></i>Vaccination Plans</a></li>
                                     <li><a class="dropdown-item" asp-page="/Nurses/VaccinationCalendar"><i class="fas fa-calendar-alt me-2"></i>Vaccination Calendar</a></li>
                                 }
+                                else
+                                {
+                                    <li>
+                                        <a class="dropdown-item" href="#">
+                                            <i class="fas fa-file-medical me-2"></i>Medical Records
+                                        </a>
+                                    </li>
+                                }
 
-                                <li><a class="dropdown-item" href="#"><i class="fas fa-calendar-check me-2"></i>Health Checks</a></li>
-                                <li><a class="dropdown-item" href="#"><i class="fas fa-exclamation-triangle me-2"></i>Incident Reports</a></li>
+                                <li><a class="dropdown-item" asp-page="/HealthChecks/Index"><i class="fas fa-calendar-check me-2"></i>Health Checks</a></li>
+                                <li><a class="dropdown-item" asp-page="/IncidentReports/Index"><i class="fas fa-exclamation-triangle me-2"></i>Incident Reports</a></li>
                             </ul>
                         </li>
 
                         @* Drug Storage visible only to SchoolNurse and Manager *@
-                        @if (Context.Session.GetString("UserRole") == "SchoolNurse" || Context.Session.GetString("UserRole") == "Manager")
+                        @if (Context.Session.GetString("UserRole") == "Nurse")
                         {
                             <li class="nav-item">
                                 <a class="nav-link" asp-page="/Admin/Inventory/Index">
@@ -107,16 +119,16 @@
                         }
 
                         @* Reports only for Admin or Manager *@
-                        @if (Context.Session.GetString("UserRole") == "Admin" || Context.Session.GetString("UserRole") == "Manager")
+                        @if (Context.Session.GetString("UserRole") == "Admin")
                         {
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle" href="#" id="reportsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                     <i class="fas fa-chart-bar me-1"></i>Reports
                                 </a>
                                 <ul class="dropdown-menu" aria-labelledby="reportsDropdown">
-                                    <li><a class="dropdown-item" href="#"><i class="fas fa-chart-line me-2"></i>Health Statistics</a></li>
-                                    <li><a class="dropdown-item" href="#"><i class="fas fa-chart-pie me-2"></i>Analytics</a></li>
-                                    <li><a class="dropdown-item" href="#"><i class="fas fa-file-alt me-2"></i>Monthly Reports</a></li>
+                                    <li><a class="dropdown-item" asp-page="/Admin/Dashboard"><i class="fas fa-chart-line me-2"></i>Health Statistics</a></li>
+                                    <li><a class="dropdown-item" asp-page="/Admin/Dashboard"><i class="fas fa-chart-pie me-2"></i>Analytics</a></li>
+                                    <li><a class="dropdown-item" asp-page="/Admin/Dashboard"><i class="fas fa-file-alt me-2"></i>Monthly Reports</a></li>
                                 </ul>
                             </li>
                         }

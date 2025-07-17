@@ -1,73 +1,156 @@
-﻿@page "/admin/medical-record"
+﻿@page "/admin/medical-records"
 @model SchoolMedicalManagement.Pages.Admin.MedicalRecords.IndexModel
 @{
-    ViewData["Title"] = "Manage Medical Records";
+    ViewData["Title"] = "Medical Records Management";
 }
 
 <div class="container-fluid py-4">
-    <div class="row justify-content-center">
-        <div class="col-lg-11 col-md-12">
-            <div class="card shadow-sm border-0">
-                <div class="card-header bg-white border-bottom d-flex justify-content-between align-items-center">
-                    <div>
-                        <h4 class="mb-0">@ViewData["Title"]</h4>
-                        <small class="text-muted">Search, review, and delete student medical records</small>
+    <div class="row">
+        <div class="col-12">
+            <!-- Header Section -->
+            <div class="card shadow-lg border-0 mb-4">
+                <div class="card-header bg-gradient-primary text-white border-0 py-4">
+                    <div class="row align-items-center">
+                        <div class="col">
+                            <h4 class="mb-2 text-white">
+                                <i class="fas fa-clipboard-list me-3"></i>Medical Records Management
+                            </h4>
+                            <p class="mb-0 text-white-50">
+                                View and manage all student medical records
+                            </p>
+                        </div>
+                        <div class="col-auto">
+                            <a href="/admin/medical-records/create" class="btn btn-outline-light">
+                                <i class="fas fa-plus me-2"></i>Add New Record
+                            </a>
+                        </div>
                     </div>
-                    <form method="get" class="d-flex">
-                        <input type="text" name="searchTerm" class="form-control form-control-sm me-2"
-                               placeholder="Search by name, allergy, disease..." value="@Model.SearchTerm" />
-                        <button type="submit" class="btn btn-sm btn-outline-primary">
-                            <i class="fas fa-search"></i>
-                        </button>
-                    </form>
                 </div>
+            </div>
 
-                <div class="card-body bg-light-subtle">
-                    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
-                    {
-                        <div class="alert alert-danger" role="alert">@Model.ErrorMessage</div>
-                    }
+            <!-- Alert Messages -->
+            @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+            {
+                <div class="alert alert-danger alert-dismissible fade show shadow-sm" role="alert">
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        <div>
+                            <strong>Error:</strong> @Model.ErrorMessage
+                        </div>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
 
-                    @if (!string.IsNullOrEmpty(Model.SuccessMessage))
-                    {
-                        <div class="alert alert-success" role="alert">@Model.SuccessMessage</div>
-                    }
+            @if (!string.IsNullOrEmpty(Model.SuccessMessage))
+            {
+                <div class="alert alert-success alert-dismissible fade show shadow-sm" role="alert">
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-check-circle me-2"></i>
+                        <div>
+                            <strong>Success:</strong> @Model.SuccessMessage
+                        </div>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
 
+            <!-- Medical Records Table -->
+            <div class="card shadow-lg border-0">
+                <div class="card-header bg-white border-bottom py-3">
+                    <div class="row align-items-center">
+                        <div class="col">
+                            <h5 class="mb-0">All Medical Records</h5>
+                            <small class="text-muted">Total: @Model.MedicalRecords.Count records</small>
+                        </div>
+                        <div class="col-auto">
+                            <!-- Search functionality can be added here -->
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body p-0">
                     @if (Model.MedicalRecords.Any())
                     {
                         <div class="table-responsive">
-                            <table class="table table-hover align-middle text-sm">
-                                <thead class="thead-light">
+                            <table class="table table-hover mb-0">
+                                <thead class="table-light">
                                     <tr>
                                         <th>Student</th>
+                                        <th>Class</th>
                                         <th>Allergies</th>
                                         <th>Chronic Diseases</th>
-                                        <th>Treatment History</th>
-                                        <th>Physical Condition</th>
-                                        <th class="text-end">Actions</th>
+                                        <th>Last Updated</th>
+                                        <th width="180">Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @foreach (var record in Model.MedicalRecords)
                                     {
-                                        <tr class="bg-white border rounded shadow-sm">
+                                        <tr>
                                             <td>
-                                                <div class="d-flex flex-column">
-                                                    <span class="fw-bold">@record.StudentName</span>
-                                                    <small class="text-muted">ID: @record.StudentId</small>
+                                                <div class="d-flex align-items-center">
+                                                    <div class="avatar-sm bg-soft-info rounded-circle d-flex align-items-center justify-content-center me-3">
+                                                        <i class="fas fa-user text-info"></i>
+                                                    </div>
+                                                    <div>
+                                                        <div class="fw-semibold">@record.StudentName</div>
+                                                        <small class="text-muted">ID: @record.StudentId</small>
+                                                    </div>
                                                 </div>
                                             </td>
-                                            <td>@(string.IsNullOrWhiteSpace(record.Allergies) ? "None" : record.Allergies)</td>
-                                            <td>@(string.IsNullOrWhiteSpace(record.ChronicDiseases) ? "None" : record.ChronicDiseases)</td>
-                                            <td>@(string.IsNullOrWhiteSpace(record.TreatmentHistory) ? "None" : record.TreatmentHistory)</td>
-                                            <td>@(string.IsNullOrWhiteSpace(record.PhysicalCondition) ? "None" : record.PhysicalCondition)</td>
-                                            <td class="text-end">
-                                                <form method="post" asp-page-handler="Delete" asp-route-id="@record.Id"
-                                                      onsubmit="return confirm('Are you sure you want to delete this medical record?');">
-                                                    <button type="submit" class="btn btn-sm btn-outline-danger">
-                                                        <i class="fas fa-trash-alt me-1"></i> Delete
-                                                    </button>
-                                                </form>
+                                            <td>
+                                                <span class="badge bg-primary">@(record.StudentClass ?? "N/A")</span>
+                                            </td>
+                                            <td>
+                                                @if (!string.IsNullOrWhiteSpace(record.Allergies))
+                                                {
+                                                    <span class="badge bg-warning text-dark">
+                                                        <i class="fas fa-exclamation-triangle me-1"></i>
+                                                        Has Allergies
+                                                    </span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="text-muted">None</span>
+                                                }
+                                            </td>
+                                            <td>
+                                                @if (!string.IsNullOrWhiteSpace(record.ChronicDiseases))
+                                                {
+                                                    <span class="badge bg-danger">
+                                                        <i class="fas fa-heartbeat me-1"></i>
+                                                        Has Conditions
+                                                    </span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="text-muted">None</span>
+                                                }
+                                            </td>
+                                            <td>
+                                                <small class="text-muted">
+                                                    <i class="far fa-clock me-1"></i>
+                                                    Recently
+                                                </small>
+                                            </td>
+                                            <td>
+                                                <div class="btn-group" role="group">
+                                                    <a href="/admin/medical-records/details/@record.Id" 
+                                                       class="btn btn-sm btn-outline-info" 
+                                                       title="View Details">
+                                                        <i class="fas fa-eye"></i>
+                                                    </a>
+                                                    <a href="/medical-records/edit/@record.Id" 
+                                                       class="btn btn-sm btn-outline-primary" 
+                                                       title="Edit">
+                                                        <i class="fas fa-edit"></i>
+                                                    </a>
+                                                    <a href="/admin/medical-records/delete/@record.Id" 
+                                                       class="btn btn-sm btn-outline-danger" 
+                                                       title="Delete">
+                                                        <i class="fas fa-trash"></i>
+                                                    </a>
+                                                </div>
                                             </td>
                                         </tr>
                                     }
@@ -78,9 +161,12 @@
                     else
                     {
                         <div class="text-center py-5">
-                            <i class="fas fa-notes-medical fa-3x text-secondary mb-3"></i>
+                            <i class="fas fa-clipboard-list fa-3x text-secondary mb-3"></i>
                             <h5 class="text-secondary">No Medical Records Found</h5>
-                            <p class="text-sm text-muted">Try adjusting your search or check back later.</p>
+                            <p class="text-muted mb-4">No medical records have been created yet.</p>
+                            <a href="/admin/medical-records/create" class="btn btn-primary">
+                                <i class="fas fa-plus me-2"></i>Create First Record
+                            </a>
                         </div>
                     }
                 </div>
@@ -88,3 +174,47 @@
         </div>
     </div>
 </div>
+
+<style>
+    .avatar-sm {
+        height: 2.5rem;
+        width: 2.5rem;
+        font-size: 0.875rem;
+    }
+    
+    .bg-soft-info {
+        background-color: rgba(13, 110, 253, 0.1);
+    }
+    
+    .card {
+        border-radius: 1rem;
+    }
+    
+    .btn {
+        border-radius: 0.5rem;
+    }
+    
+    .badge {
+        border-radius: 0.375rem;
+    }
+    
+    .table th {
+        border-top: none;
+        font-weight: 600;
+        color: #495057;
+        background-color: #f8f9fa !important;
+    }
+    
+    .table td {
+        vertical-align: middle;
+        border-color: #e9ecef;
+    }
+    
+    .table-hover tbody tr:hover {
+        background-color: rgba(13, 110, 253, 0.04);
+    }
+    
+    .bg-gradient-primary {
+        background: linear-gradient(135deg, #0d6efd 0%, #0056b3 100%);
+    }
+</style>

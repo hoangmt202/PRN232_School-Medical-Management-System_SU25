@@ -18,8 +18,8 @@ namespace BusinessLogic.DTOs
         public string ActionTaken { get; set; } = null!;
 
         // Navigation properties
-        public Student? Student { get; set; }
-        public SchoolNurse? Nurse { get; set; }
+        public BusinessObject.Entity.Student? Student { get; set; }
+        public BusinessObject.Entity.SchoolNurse? Nurse { get; set; }
     }
 
     public class CreateIncidentReportDto

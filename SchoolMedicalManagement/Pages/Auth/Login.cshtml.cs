@@ -167,8 +167,8 @@ namespace SchoolMedicalManagement.Pages.Auth
                         Response.Cookies.Append("AuthToken", loginResponse.Token, new CookieOptions
                         {
                             HttpOnly = true,
-                            Secure = true,
-                            SameSite = SameSiteMode.Strict,
+                            Secure = Request.IsHttps, // Only secure in HTTPS
+                            SameSite = SameSiteMode.Lax, // Less strict for development
                             Expires = Input.RememberMe ?
                                 DateTimeOffset.Now.AddDays(30) :
                                 DateTimeOffset.Now.AddHours(1)
